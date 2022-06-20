@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/note"
+        android:icon="@drawable/ic_note_icon"
+        android:title="Note"
+        app:cnb_iconColor="@color/primarypurple"/>
+    <item
+        android:id="@+id/quote"
+        android:icon="@drawable/ic_quote"
+        android:title="Quote"
+        app:cnb_iconColor="@color/primarypurple"/>
+    <item
+        android:id="@+id/remainder"
+        android:icon="@drawable/ic_clock"
+        android:title="Remainder"
+        app:cnb_iconColor="@color/primarypurple" />
+</menu>

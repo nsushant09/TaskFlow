@@ -7,5 +7,27 @@
     tools:context=".MainActivity"
     >
 
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomnavigationbar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/bottomnavigationbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:cnb_menuResource="@menu/bottom_navigation_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:cnb_unselectedColor="@color/grey"
+        android:paddingVertical="16dp"
+        app:cnb_textAppearance="@style/BottomNavigationBarStyle"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
