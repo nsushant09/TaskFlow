@@ -10,12 +10,15 @@ import com.neupanesushant.note.databinding.AllNoteRecyclerViewLayoutBinding
 import com.neupanesushant.note.model.NoteDetails
 import kotlin.random.Random
 
-class AllNotesAdapter(val context: Context, val list: List<NoteDetails>) :
+class AllNotesAdapter(val context: Context, val list: List<NoteDetails>, val onNoteLayoutClick : (NoteDetails) -> Unit) :
     RecyclerView.Adapter<AllNotesAdapter.ViewHolder>() {
 
     inner class ViewHolder(binding: AllNoteRecyclerViewLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val layout = binding.allNoteLinearLayout
+        val title = binding.tvTitle
+        val description = binding.tvDescription
+        val date = binding.tvDate
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,6 +32,7 @@ class AllNotesAdapter(val context: Context, val list: List<NoteDetails>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val currentObject = list.get(position)
         val random = Random.nextInt(1, 6)
         when (random) {
             1 -> holder.layout.setBackgroundResource(R.drawable.all_note_bg_lightblue)
@@ -42,9 +46,15 @@ class AllNotesAdapter(val context: Context, val list: List<NoteDetails>) :
         } else {
             holder.itemView.animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
         }
+        holder.title.text = currentObject.title
+        holder.description.text = currentObject.description
+        holder.date.text = currentObject.date
+        holder.itemView.setOnClickListener{
+            onNoteLayoutClick(currentObject)
+        }
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return list.size
     }
 }

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/colorPrimary"
+    tools:context=".AddNoteActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="32dp"
+        >
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="?attr/colorSecondary"
+            android:contentDescription="@string/icon_image"
+            android:layout_centerVertical="true"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notes"
+            android:layout_gravity="center"
+            android:fontFamily="@font/latoregular"
+            android:textSize="16sp"
+            android:layout_toEndOf="@id/btnBack"
+            android:layout_centerVertical="true"
+            />
+
+        <ImageView
+            android:id="@+id/btnMenu"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/icon_image"
+            android:src="@drawable/ic_menu"
+            app:tint="?attr/colorSecondary"
+            android:foregroundGravity="right"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            />
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/etTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="16dp"
+        android:textCursorDrawable="?attr/colorOnPrimary"
+        android:textColor="?attr/colorOnPrimary"
+        android:textColorHint="@color/grey_dark"
+        android:hint="@string/title"
+        android:fontFamily="@font/latomed"
+        android:textSize="32sp"
+        android:fitsSystemWindows="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:cursorVisible="true"
+        android:background="@drawable/add_note_edittext_bg"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etDescription"
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="16dp"
+        android:textCursorDrawable="?attr/colorOnPrimary"
+        android:textColor="?attr/colorOnPrimary"
+        android:textColorHint="@color/grey_dark"
+        android:fontFamily="@font/latoregular"
+        android:textSize="16sp"
+        android:fitsSystemWindows="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:cursorVisible="true"
+        android:background="@drawable/add_note_edittext_bg"
+        android:inputType="text"
+        android:gravity="top"
+        />
+
+
+</LinearLayout>

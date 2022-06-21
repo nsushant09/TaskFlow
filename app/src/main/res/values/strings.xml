@@ -4,4 +4,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_icon">Search Icon</string>
     <string name="notes">Notes</string>
+    <string name="icon_image">Icon Image</string>
+    <string name="title">Title</string>
 </resources>

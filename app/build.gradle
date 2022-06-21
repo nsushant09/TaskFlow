@@ -60,4 +60,7 @@ dependencies {
 
     //chip navigation bar
     implementation 'com.github.ismaeldivita:chip-navigation-bar:1.4.0'
+
+    //for activity view models
+    implementation "androidx.fragment:fragment-ktx:1.4.0"
 }
