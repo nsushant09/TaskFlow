@@ -39,13 +39,15 @@ class AddNoteActivity : AppCompatActivity() {
 
             binding.etTitle.setText(titleForCurrentNote)
             binding.etDescription.setText(descriptionForCurrentNote)
+            setupInputStart(binding.etDescription)
+        }else{
+            setupInputStart(binding.etTitle)
         }
 
         binding.etDescription.setOnClickListener {
             if (binding.etTitle.isFocused) {
                 binding.etTitle.clearFocus()
             }
-
             setupInputStart(binding.etDescription)
         }
         binding.btnBack.setOnClickListener {

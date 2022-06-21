@@ -86,7 +86,7 @@
         android:textColor="?attr/colorOnPrimary"
         android:textColorHint="@color/grey_dark"
         android:fontFamily="@font/latoregular"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:fitsSystemWindows="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
