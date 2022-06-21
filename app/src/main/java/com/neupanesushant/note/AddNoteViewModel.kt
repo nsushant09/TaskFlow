@@ -35,6 +35,12 @@ class AddNoteViewModel(application : Application) : AndroidViewModel(application
         }
     }
 
+    fun deleteNoteDetails(noteDetails: NoteDetails){
+        viewModelScope.launch(Dispatchers.IO){
+            noteDetailsDao.delete(noteDetails)
+        }
+    }
+
 //   fun getCurrentNoteDetails(id : Int){
 //       viewModelScope.launch{
 //           _clickedFromNoteFragment.value = noteDetailsDao.getNoteDetails(id).value

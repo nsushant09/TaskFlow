@@ -6,4 +6,6 @@
     <string name="notes">Notes</string>
     <string name="icon_image">Icon Image</string>
     <string name="title">Title</string>
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
 </resources>

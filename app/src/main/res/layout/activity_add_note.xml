@@ -61,7 +61,6 @@
         android:layout_marginTop="16dp"
         android:paddingVertical="16dp"
         android:paddingHorizontal="16dp"
-        android:textCursorDrawable="?attr/colorOnPrimary"
         android:textColor="?attr/colorOnPrimary"
         android:textColorHint="@color/grey_dark"
         android:hint="@string/title"
@@ -72,7 +71,9 @@
         android:focusableInTouchMode="true"
         android:cursorVisible="true"
         android:background="@drawable/add_note_edittext_bg"
-        android:inputType="text" />
+        android:inputType="text"
+        android:textCursorDrawable="@null"
+        />
 
     <EditText
         android:id="@+id/etDescription"
@@ -82,7 +83,6 @@
         android:layout_marginTop="16dp"
         android:paddingVertical="16dp"
         android:paddingHorizontal="16dp"
-        android:textCursorDrawable="?attr/colorOnPrimary"
         android:textColor="?attr/colorOnPrimary"
         android:textColorHint="@color/grey_dark"
         android:fontFamily="@font/latoregular"
@@ -94,6 +94,7 @@
         android:background="@drawable/add_note_edittext_bg"
         android:inputType="text"
         android:gravity="top"
+        android:textCursorDrawable="@null"
         />
 
 
