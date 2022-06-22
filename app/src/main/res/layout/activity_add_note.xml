@@ -30,13 +30,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/notes"
-            android:layout_gravity="center"
-            android:fontFamily="@font/latoregular"
-            android:textSize="16sp"
-            android:layout_toEndOf="@id/btnBack"
             android:layout_centerVertical="true"
-            />
+            android:layout_gravity="center"
+            android:layout_toEndOf="@id/btnBack"
+            android:fontFamily="@font/latoregular"
+            android:text="@string/notes"
+            android:textColor="@color/primarypurple"
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/btnMenu"

@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     fun replaceFragment(fragment: Fragment) {
         if (fragment != null) {
             val fragmentTransaction = supportFragmentManager.beginTransaction()
-            val animation = AnimationUtils.loadAnimation(baseContext, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom)
             fragmentTransaction.replace(R.id.fragment_container, fragment)
             fragmentTransaction.commit()
         }
@@ -53,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(remainderFragment)
                 }
             }
-            true
         }
     }
 }

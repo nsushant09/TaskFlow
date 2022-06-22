@@ -11,6 +11,7 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -41,7 +42,6 @@ class NoteFragment : Fragment() {
     }
 
     val onNoteLayoutClick: (NoteDetails) -> Unit = { noteDetails ->
-//        viewModel.deleteNoteDetails(noteDetails)
         val intent = Intent(requireContext(), AddNoteActivity::class.java)
         intent.putExtra("isOpenedFromNoteLayout", true)
         intent.putExtra("idForCurrentNote", noteDetails.id)
@@ -51,6 +51,7 @@ class NoteFragment : Fragment() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -59,6 +60,8 @@ class NoteFragment : Fragment() {
             androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom
         )
         binding.rvAllNotes.layoutManager = LinearLayoutManager(context)
+        binding.NotesTitle.animation = AnimationUtils.loadAnimation(requireContext(), androidx.appcompat.R.anim.abc_slide_in_top)
+        binding.btnAddNote.animation = AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
 
         viewModel.readAllNote.observe(viewLifecycleOwner, Observer {
             adapter = AllNotesAdapter(requireContext(), it, onNoteLayoutClick)
@@ -76,6 +79,7 @@ class NoteFragment : Fragment() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun searchButtonListener() {
         binding.btnSearch.setOnClickListener {
             if (viewModel.isSearchFieldVisible.value!!) {
@@ -97,14 +101,16 @@ class NoteFragment : Fragment() {
     }
 
     fun searchBarChangeListener() {
-        binding.etSearch.addTextChangedListener {
-            if(it == null || it.length == 0){
-                adapter = AllNotesAdapter(requireContext(), viewModel.readAllNote.value!!, onNoteLayoutClick)
-                binding.rvAllNotes.adapter = adapter
-            }else{
-                viewModel.searchNoteWithString(it.toString())
-                adapter = AllNotesAdapter(requireContext(), viewModel.searchedNoteList.value!!, onNoteLayoutClick)
-                binding.rvAllNotes.adapter = adapter
+        if(binding.etSearch.isVisible){
+            binding.etSearch.addTextChangedListener {
+                if(it == null || it.length == 0){
+                    adapter = AllNotesAdapter(requireContext(), viewModel.readAllNote.value!!, onNoteLayoutClick)
+                    binding.rvAllNotes.adapter = adapter
+                }else{
+                    viewModel.searchNoteWithString(it.toString())
+                    adapter = AllNotesAdapter(requireContext(), viewModel.searchedNoteList.value!!, onNoteLayoutClick)
+                    binding.rvAllNotes.adapter = adapter
+                }
             }
         }
     }

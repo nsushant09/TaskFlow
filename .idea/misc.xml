@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-v24/all_quote_bg_darkgreen.xml" value="0.3185" />
+        <entry key="app/src/main/res/drawable-v24/all_quote_bg_darkpink.xml" value="0.3185" />
+        <entry key="app/src/main/res/drawable-v24/all_quote_bg_darkyellow.xml" value="0.3185" />
+        <entry key="app/src/main/res/drawable-v24/progressbarstyle1.xml" value="0.3185" />
         <entry key="app/src/main/res/drawable/add_note_edittext_bg.xml" value="0.3185" />
         <entry key="app/src/main/res/drawable/all_note_bg_lightcreame.xml" value="0.3185" />
         <entry key="app/src/main/res/drawable/all_note_bg_lightgreen.xml" value="0.3185" />
@@ -10,11 +14,16 @@
         <entry key="app/src/main/res/drawable/all_note_bg_lightpink.xml" value="0.3185" />
         <entry key="app/src/main/res/drawable/all_note_bg_lightred.xml" value="0.3185" />
         <entry key="app/src/main/res/drawable/all_note_recycler_view_bg.xml" value="0.3185" />
+        <entry key="app/src/main/res/drawable/all_quote_bg_darkblue.xml" value="0.3185" />
+        <entry key="app/src/main/res/drawable/all_quote_bg_darkcreame.xml" value="0.3185" />
         <entry key="app/src/main/res/drawable/ic_note_icon.xml" value="0.2295" />
+        <entry key="app/src/main/res/drawable/notefragmentsearch_bg.xml" value="0.3185" />
         <entry key="app/src/main/res/layout/activity_add_note.xml" value="0.33133817870884996" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3617021276595745" />
         <entry key="app/src/main/res/layout/all_note_recycler_view_layout.xml" value="0.3304831124412142" />
+        <entry key="app/src/main/res/layout/all_quote_recycler_view_layout.xml" value="0.3304831124412142" />
         <entry key="app/src/main/res/layout/fragment_note.xml" value="0.3271422541156606" />
+        <entry key="app/src/main/res/layout/fragment_quote.xml" value="0.33133817870884996" />
         <entry key="app/src/main/res/menu/add_note_options_menu.xml" value="0.33133817870884996" />
         <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.28131680205215903" />
       </map>

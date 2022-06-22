@@ -51,7 +51,6 @@ class AddNoteActivity : AppCompatActivity() {
             setupInputStart(binding.etDescription)
         }
         binding.btnBack.setOnClickListener {
-            addOrUpdateNote()
             finish()
         }
         setupOptionsMenu()
@@ -66,14 +65,20 @@ class AddNoteActivity : AppCompatActivity() {
         editText.setTextCursorDrawable(null)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun addOrUpdateNote(){
-        val title = binding.etTitle.text.toString()
+        var title = binding.etTitle.text.toString()
+        if(title.isEmpty()){
+            title = "Text Note"
+        }
         val description = binding.etDescription.text.toString()
         val date = LocalDate.now().toString()
         if(isOpenedFromNoteLayout){
             viewModel.updateNoteDetails(NoteDetails(idForCurrentNote, title, description, date))
         }else{
-            viewModel.addNoteDetails(NoteDetails(0, title, description, date))
+            if(!description.isEmpty()){
+                viewModel.addNoteDetails(NoteDetails(0, title, description, date))
+            }
         }
     }
 
@@ -115,6 +120,11 @@ class AddNoteActivity : AppCompatActivity() {
         }else{
             finish()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        addOrUpdateNote()
     }
 
 }

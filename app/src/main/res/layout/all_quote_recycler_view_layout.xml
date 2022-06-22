@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="16dp"
+    android:id="@+id/allQuoteLinearLayout"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/all_quote_bg_darkyellow"
+    >
+
+    <ImageView
+        android:id="@+id/ivQuoteLeft"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_quote_left"
+        app:tint="?attr/colorPrimaryVariant"
+        android:contentDescription="@string/icon_image" />
+
+    <TextView
+        android:id="@+id/tvQuoteContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivQuoteLeft"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="8dp"
+        android:fontFamily="@font/thabit"
+        android:textColor="@color/black"
+        android:text="The way i see it if you want the rainbow, you gotta be up with the rain"
+        android:textSize="24sp" />
+
+    <ImageView
+        android:id="@+id/ivQuoteRight"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_quote_right"
+        android:contentDescription="@string/icon_image"
+        app:tint="?attr/colorPrimaryVariant"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/tvQuoteContent"
+        />
+
+</RelativeLayout>
