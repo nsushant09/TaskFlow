@@ -11,9 +11,4 @@
         android:icon="@drawable/ic_quote"
         android:title="Quote"
         app:cnb_iconColor="@color/primarypurple"/>
-    <item
-        android:id="@+id/remainder"
-        android:icon="@drawable/ic_clock"
-        android:title="Remainder"
-        app:cnb_iconColor="@color/primarypurple" />
 </menu>

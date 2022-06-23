@@ -8,14 +8,12 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.neupanesushant.note.databinding.ActivityMainBinding
 import com.neupanesushant.note.fragments.note.NoteFragment
 import com.neupanesushant.note.fragments.quote.QuoteFragment
-import com.neupanesushant.note.fragments.remainder.RemainderFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
 
     private val noteFragment = NoteFragment()
     private val quoteFragment = QuoteFragment()
-    private val remainderFragment = RemainderFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,9 +45,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.quote -> {
                     replaceFragment(quoteFragment)
-                }
-                R.id.remainder-> {
-                    replaceFragment(remainderFragment)
                 }
             }
         }
