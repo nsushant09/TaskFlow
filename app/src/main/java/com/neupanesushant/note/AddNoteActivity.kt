@@ -25,6 +25,7 @@ class AddNoteActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("AddNote", "On Create is called")
         binding = ActivityAddNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this).get(AddNoteViewModel::class.java)
@@ -114,7 +115,11 @@ class AddNoteActivity : AppCompatActivity() {
         if(isOpenedFromNoteLayout){
             val title = binding.etTitle.text.toString()
             val description = binding.etDescription.text.toString()
-            val date = LocalDate.now().toString()
+            val date = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                LocalDate.now().toString()
+            } else {
+                ""
+            }
             viewModel.deleteNoteDetails(NoteDetails(idForCurrentNote, title, description, date))
             finish()
         }else{
@@ -122,8 +127,10 @@ class AddNoteActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onPause() {
+        super.onPause()
         addOrUpdateNote()
     }
 
