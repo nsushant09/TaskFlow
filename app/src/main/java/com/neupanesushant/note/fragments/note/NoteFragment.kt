@@ -44,9 +44,10 @@ class NoteFragment : Fragment() {
     val onNoteLayoutClick: (NoteDetails) -> Unit = { noteDetails ->
         val intent = Intent(requireContext(), AddNoteActivity::class.java)
         intent.putExtra("isOpenedFromNoteLayout", true)
-        intent.putExtra("idForCurrentNote", noteDetails.id)
-        intent.putExtra("titleForCurrentNote", noteDetails.title)
-        intent.putExtra("descriptionForCurrentNote", noteDetails.description)
+//        intent.putExtra("idForCurrentNote", noteDetails.id)
+//        intent.putExtra("titleForCurrentNote", noteDetails.title)
+//        intent.putExtra("descriptionForCurrentNote", noteDetails.description)
+        intent.putExtra("currentNoteObject", noteDetails)
         startActivity(intent)
 
     }

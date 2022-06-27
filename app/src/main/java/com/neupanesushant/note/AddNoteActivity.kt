@@ -20,6 +20,7 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddNoteBinding
     private var isOpenedFromNoteLayout : Boolean = false
     var idForCurrentNote = -1
+    lateinit var currentNoteObject : NoteDetails
     lateinit var viewModel: AddNoteViewModel
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -34,12 +35,13 @@ class AddNoteActivity : AppCompatActivity() {
         val descriptionForCurrentNote : String
         isOpenedFromNoteLayout = intent.getBooleanExtra("isOpenedFromNoteLayout", false)
         if (isOpenedFromNoteLayout) {
-            idForCurrentNote = intent.getIntExtra("idForCurrentNote", 0)
-            titleForCurrentNote = intent.getStringExtra("titleForCurrentNote").toString()
-            descriptionForCurrentNote = intent.getStringExtra("descriptionForCurrentNote").toString()
+//            idForCurrentNote = intent.getIntExtra("idForCurrentNote", 0)
+//            titleForCurrentNote = intent.getStringExtra("titleForCurrentNote").toString()
+//            descriptionForCurrentNote = intent.getStringExtra("descriptionForCurrentNote").toString()
+            currentNoteObject = intent.getParcelableExtra<NoteDetails>("currentNoteObject")!!
 
-            binding.etTitle.setText(titleForCurrentNote)
-            binding.etDescription.setText(descriptionForCurrentNote)
+            binding.etTitle.setText(currentNoteObject.title)
+            binding.etDescription.setText(currentNoteObject.description)
             setupInputStart(binding.etDescription)
         }else{
             setupInputStart(binding.etTitle)
