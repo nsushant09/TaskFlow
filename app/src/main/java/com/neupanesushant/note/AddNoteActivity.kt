@@ -19,7 +19,6 @@ import java.time.LocalDate
 class AddNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddNoteBinding
     private var isOpenedFromNoteLayout : Boolean = false
-    var idForCurrentNote = -1
     lateinit var currentNoteObject : NoteDetails
     lateinit var viewModel: AddNoteViewModel
 
@@ -31,15 +30,9 @@ class AddNoteActivity : AppCompatActivity() {
         setContentView(binding.root)
         viewModel = ViewModelProvider(this).get(AddNoteViewModel::class.java)
 
-        val titleForCurrentNote : String
-        val descriptionForCurrentNote : String
         isOpenedFromNoteLayout = intent.getBooleanExtra("isOpenedFromNoteLayout", false)
         if (isOpenedFromNoteLayout) {
-//            idForCurrentNote = intent.getIntExtra("idForCurrentNote", 0)
-//            titleForCurrentNote = intent.getStringExtra("titleForCurrentNote").toString()
-//            descriptionForCurrentNote = intent.getStringExtra("descriptionForCurrentNote").toString()
             currentNoteObject = intent.getParcelableExtra<NoteDetails>("currentNoteObject")!!
-
             binding.etTitle.setText(currentNoteObject.title)
             binding.etDescription.setText(currentNoteObject.description)
             setupInputStart(binding.etDescription)
@@ -77,7 +70,7 @@ class AddNoteActivity : AppCompatActivity() {
         val description = binding.etDescription.text.toString()
         val date = LocalDate.now().toString()
         if(isOpenedFromNoteLayout){
-            viewModel.updateNoteDetails(NoteDetails(idForCurrentNote, title, description, date))
+            viewModel.updateNoteDetails(NoteDetails(currentNoteObject.id, title, description, date))
         }else{
             if(!description.isEmpty()){
                 viewModel.addNoteDetails(NoteDetails(0, title, description, date))
@@ -86,6 +79,7 @@ class AddNoteActivity : AppCompatActivity() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setupOptionsMenu(){
         binding.btnMenu.setOnClickListener {
             val popUpMenu = PopupMenu(this, it)
@@ -113,16 +107,11 @@ class AddNoteActivity : AppCompatActivity() {
         startActivity(shareIntent)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onDeleteClick(){
         if(isOpenedFromNoteLayout){
-            val title = binding.etTitle.text.toString()
-            val description = binding.etDescription.text.toString()
-            val date = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                LocalDate.now().toString()
-            } else {
-                ""
-            }
-            viewModel.deleteNoteDetails(NoteDetails(idForCurrentNote, title, description, date))
+            Log.i("AddNote", "Inside here")
+            viewModel.deleteNoteDetails(NoteDetails(currentNoteObject.id, currentNoteObject.title, currentNoteObject.description, currentNoteObject.date))
             finish()
         }else{
             finish()
