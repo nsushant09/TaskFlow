@@ -21,6 +21,7 @@ import com.neupanesushant.note.AddNoteActivity
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentNoteBinding
 import com.neupanesushant.note.model.NoteDetails
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
 class NoteFragment : Fragment() {
@@ -37,16 +38,13 @@ class NoteFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentNoteBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
+        viewModel = getViewModel<NoteViewModel>()
         return binding.root
     }
 
     val onNoteLayoutClick: (NoteDetails) -> Unit = { noteDetails ->
         val intent = Intent(requireContext(), AddNoteActivity::class.java)
         intent.putExtra("isOpenedFromNoteLayout", true)
-//        intent.putExtra("idForCurrentNote", noteDetails.id)
-//        intent.putExtra("titleForCurrentNote", noteDetails.title)
-//        intent.putExtra("descriptionForCurrentNote", noteDetails.description)
         intent.putExtra("currentNoteObject", noteDetails)
         startActivity(intent)
 

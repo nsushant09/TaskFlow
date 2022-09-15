@@ -12,6 +12,8 @@ import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentQuoteBinding
+import org.koin.android.compat.ScopeCompat.getViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
 class QuoteFragment : Fragment() {
@@ -26,7 +28,7 @@ class QuoteFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentQuoteBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this).get(QuoteViewModel::class.java)
+        viewModel = getViewModel<QuoteViewModel>()
         return binding.root
     }
 

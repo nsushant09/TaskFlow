@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.neupanesushant.note.databinding.ActivityAddNoteBinding
 import com.neupanesushant.note.model.NoteDetails
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.time.LocalDate
 
 class AddNoteActivity : AppCompatActivity() {
@@ -28,7 +29,7 @@ class AddNoteActivity : AppCompatActivity() {
         Log.i("AddNote", "On Create is called")
         binding = ActivityAddNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel = ViewModelProvider(this).get(AddNoteViewModel::class.java)
+        viewModel = getViewModel<AddNoteViewModel>()
 
         isOpenedFromNoteLayout = intent.getBooleanExtra("isOpenedFromNoteLayout", false)
         if (isOpenedFromNoteLayout) {

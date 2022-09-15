@@ -1,15 +1,12 @@
 package com.neupanesushant.note.fragments.quote
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.neupanesushant.note.fragments.quote.model.Quote
-import com.neupanesushant.note.fragments.quote.model.QuotesAPIService
+import com.neupanesushant.note.fragments.quote.model.QuotesAPI
 import kotlinx.coroutines.launch
 
-class QuoteViewModel(application: Application) : AndroidViewModel(application) {
+class QuoteViewModel(private val QuoteAPIService : QuotesAPI) : ViewModel(){
 
     val BASE_URL = "https://favqs.com/api/"
 
@@ -37,7 +34,7 @@ class QuoteViewModel(application: Application) : AndroidViewModel(application) {
     fun getContentData() {
         viewModelScope.launch {
             try {
-                tempListOfQuotes.add(QuotesAPIService.retrofitService.getData().quote)
+                tempListOfQuotes.add(QuoteAPIService.getData().quote)
                 _listofQuotes.value = tempListOfQuotes.toList()
                 if (_listofQuotes.value!!.size >= 10) {
                     _isLoading.value = false
