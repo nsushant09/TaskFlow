@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Note" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Note" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryVariant">@color/secondary_white</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
@@ -10,8 +10,10 @@
         <item name="colorSecondaryVariant">@color/purplevariant</item>
         <item name="colorOnSecondary">@color/grey_dark</item>
         <!-- Status bar color. -->
+        <item name="textAppearanceHeadline1"></item>
         <item name="android:statusBarColor" >?attr/colorOnPrimary</item>
         <!-- Customize your theme here. -->
         <item name="popupMenuStyle">@style/popupMenuStyle</item>
+
     </style>
 </resources>

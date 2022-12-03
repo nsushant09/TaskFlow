@@ -21,6 +21,7 @@ import com.neupanesushant.note.AddNoteActivity
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentNoteBinding
 import com.neupanesushant.note.model.NoteDetails
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
@@ -30,7 +31,9 @@ class NoteFragment : Fragment() {
     private val binding get() = _binding
 
     lateinit var adapter: AllNotesAdapter
-    lateinit var viewModel: NoteViewModel
+    lateinit var viewModel: NoteViewModel;
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
