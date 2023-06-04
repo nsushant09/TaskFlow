@@ -1,4 +1,4 @@
-package com.neupanesushant.note
+package com.neupanesushant.note.fragments.note
 
 import android.content.Context
 import android.content.Intent
@@ -8,28 +8,26 @@ import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.ActivityAddNoteBinding
 import com.neupanesushant.note.model.NoteDetails
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.time.LocalDate
 
 class AddNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddNoteBinding
-    private var isOpenedFromNoteLayout : Boolean = false
-    lateinit var currentNoteObject : NoteDetails
-    lateinit var viewModel: AddNoteViewModel
+    private var isOpenedFromNoteLayout: Boolean = false
+    private lateinit var currentNoteObject: NoteDetails
+    private val viewModel: AddNoteViewModel by inject()
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("AddNote", "On Create is called")
         binding = ActivityAddNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel = getViewModel<AddNoteViewModel>()
 
         isOpenedFromNoteLayout = intent.getBooleanExtra("isOpenedFromNoteLayout", false)
         if (isOpenedFromNoteLayout) {
@@ -37,7 +35,7 @@ class AddNoteActivity : AppCompatActivity() {
             binding.etTitle.setText(currentNoteObject.title)
             binding.etDescription.setText(currentNoteObject.description)
             setupInputStart(binding.etDescription)
-        }else{
+        } else {
             setupInputStart(binding.etTitle)
         }
 
@@ -59,34 +57,38 @@ class AddNoteActivity : AppCompatActivity() {
         val imm: InputMethodManager =
             baseContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(editText, 0)
-        editText.setTextCursorDrawable(null)
+        editText.textCursorDrawable = null
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addOrUpdateNote(){
+    fun addOrUpdateNote() {
         var title = binding.etTitle.text.toString()
-        if(title.isEmpty()){
+        if (title.isEmpty()) {
             title = "Text Note"
         }
         val description = binding.etDescription.text.toString()
         val date = LocalDate.now().toString()
-        if(isOpenedFromNoteLayout){
+        if (isOpenedFromNoteLayout) {
             viewModel.updateNoteDetails(NoteDetails(currentNoteObject.id, title, description, date))
-        }else{
-            if(!description.isEmpty()){
-                viewModel.addNoteDetails(NoteDetails(0, title, description, date))
+        } else {
+            if (description.isNotEmpty()) {
+                currentNoteObject?.let { currentNote ->
+                    if (currentNote.title != title || currentNote.description != description) {
+                        viewModel.addNoteDetails(NoteDetails(0, title, description, date))
+                    }
+                }
             }
         }
     }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setupOptionsMenu(){
+    fun setupOptionsMenu() {
         binding.btnMenu.setOnClickListener {
             val popUpMenu = PopupMenu(this, it)
-            popUpMenu.menuInflater.inflate(R.menu.add_note_options_menu,popUpMenu.menu)
+            popUpMenu.menuInflater.inflate(R.menu.add_note_options_menu, popUpMenu.menu)
             popUpMenu.setOnMenuItemClickListener {
-                when(it.itemId){
+                when (it.itemId) {
                     R.id.addNoteOptionsShare -> onShareClick()
                     R.id.addNoteOptionsDelete -> onDeleteClick()
                 }
@@ -96,7 +98,7 @@ class AddNoteActivity : AppCompatActivity() {
         }
     }
 
-    fun onShareClick(){
+    fun onShareClick() {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_SUBJECT, binding.etTitle.text.toString())
@@ -109,12 +111,19 @@ class AddNoteActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun onDeleteClick(){
-        if(isOpenedFromNoteLayout){
+    fun onDeleteClick() {
+        if (isOpenedFromNoteLayout) {
             Log.i("AddNote", "Inside here")
-            viewModel.deleteNoteDetails(NoteDetails(currentNoteObject.id, currentNoteObject.title, currentNoteObject.description, currentNoteObject.date))
+            viewModel.deleteNoteDetails(
+                NoteDetails(
+                    currentNoteObject.id,
+                    currentNoteObject.title,
+                    currentNoteObject.description,
+                    currentNoteObject.date
+                )
+            )
             finish()
-        }else{
+        } else {
             finish()
         }
     }

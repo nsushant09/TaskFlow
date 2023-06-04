@@ -1,4 +1,4 @@
-package com.neupanesushant.note
+package com.neupanesushant.note.fragments.note
 
 import android.app.Application
 import android.util.Log

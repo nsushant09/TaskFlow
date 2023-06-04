@@ -1,8 +1,7 @@
 package com.neupanesushant.note
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.neupanesushant.note.databinding.ActivityMainBinding
@@ -27,12 +26,10 @@ class MainActivity : AppCompatActivity() {
         currentFragmentListener(binding.bottomnavigationbar)
     }
 
-    fun replaceFragment(fragment: Fragment) {
-        if (fragment != null) {
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragment_container, fragment)
-            fragmentTransaction.commit()
-        }
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, fragment)
+        fragmentTransaction.commit()
 
     }
 

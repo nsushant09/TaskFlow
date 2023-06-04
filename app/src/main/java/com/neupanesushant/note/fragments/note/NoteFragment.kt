@@ -15,14 +15,11 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.neupanesushant.note.AddNoteActivity
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentNoteBinding
 import com.neupanesushant.note.model.NoteDetails
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
 class NoteFragment : Fragment() {
@@ -31,8 +28,8 @@ class NoteFragment : Fragment() {
     private val binding get() = _binding
 
     lateinit var adapter: AllNotesAdapter
-    lateinit var viewModel: NoteViewModel;
 
+    private val viewModel : NoteViewModel by inject()
 
 
     override fun onCreateView(
@@ -41,7 +38,6 @@ class NoteFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentNoteBinding.inflate(layoutInflater)
-        viewModel = getViewModel<NoteViewModel>()
         return binding.root
     }
 

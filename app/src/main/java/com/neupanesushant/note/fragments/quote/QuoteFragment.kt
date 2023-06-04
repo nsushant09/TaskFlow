@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentQuoteBinding
 import org.koin.android.compat.ScopeCompat.getViewModel
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
@@ -20,15 +21,14 @@ class QuoteFragment : Fragment() {
 
     private lateinit var _binding : FragmentQuoteBinding
     private val binding get() = _binding
-    private lateinit var viewModel: QuoteViewModel
     lateinit var adapter : AllQuotesAdapter
+    private val viewModel : QuoteViewModel by inject()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentQuoteBinding.inflate(layoutInflater)
-        viewModel = getViewModel<QuoteViewModel>()
         return binding.root
     }
 
