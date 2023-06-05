@@ -69,14 +69,23 @@ class AddNoteActivity : AppCompatActivity() {
         val description = binding.etDescription.text.toString()
         val date = LocalDate.now().toString()
         if (isOpenedFromNoteLayout) {
-            viewModel.updateNoteDetails(NoteDetails(currentNoteObject.id, title, description, date))
+            currentNoteObject?.let {
+                if (it.description != description || it.title != title) {
+                    viewModel.updateNoteDetails(
+                        NoteDetails(
+                            currentNoteObject.id,
+                            title,
+                            description,
+                            date
+                        )
+                    )
+                }
+            }
         } else {
             if (description.isNotEmpty()) {
-                currentNoteObject?.let { currentNote ->
-                    if (currentNote.title != title || currentNote.description != description) {
-                        viewModel.addNoteDetails(NoteDetails(0, title, description, date))
-                    }
-                }
+                viewModel.addNoteDetails(NoteDetails(0, title, description, date))
+
+
             }
         }
     }
