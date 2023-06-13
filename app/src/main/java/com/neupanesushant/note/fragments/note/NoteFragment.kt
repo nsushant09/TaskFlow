@@ -14,11 +14,10 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentNoteBinding
-import com.neupanesushant.note.model.NoteDetails
+import com.neupanesushant.note.domain.model.NoteDetails
 import org.koin.android.ext.android.inject
 
 
@@ -26,22 +25,20 @@ class NoteFragment : Fragment() {
 
     private lateinit var _binding: FragmentNoteBinding
     private val binding get() = _binding
-
-    lateinit var adapter: AllNotesAdapter
-
-    private val viewModel : NoteViewModel by inject()
+    private lateinit var adapter: AllNotesAdapter
+    private val viewModel: NoteViewModel by inject()
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentNoteBinding.inflate(layoutInflater)
         return binding.root
     }
 
-    val onNoteLayoutClick: (NoteDetails) -> Unit = { noteDetails ->
+    private val onNoteLayoutClick: (NoteDetails) -> Unit = { noteDetails ->
         val intent = Intent(requireContext(), AddNoteActivity::class.java)
         intent.putExtra("isOpenedFromNoteLayout", true)
         intent.putExtra("currentNoteObject", noteDetails)
@@ -53,19 +50,27 @@ class NoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
+        setupEventListener()
+        setupObserver()
+    }
+
+    private fun setupView() {
         binding.rvAllNotes.animation = AnimationUtils.loadAnimation(
             context,
             androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom
         )
         binding.rvAllNotes.layoutManager = LinearLayoutManager(context)
-        binding.NotesTitle.animation = AnimationUtils.loadAnimation(requireContext(), androidx.appcompat.R.anim.abc_slide_in_top)
-        binding.btnAddNote.animation = AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
+        binding.NotesTitle.animation = AnimationUtils.loadAnimation(
+            requireContext(),
+            androidx.appcompat.R.anim.abc_slide_in_top
+        )
+        binding.btnAddNote.animation =
+            AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
+    }
 
-        viewModel.readAllNote.observe(viewLifecycleOwner, Observer {
-            adapter = AllNotesAdapter(requireContext(), it, onNoteLayoutClick)
-            binding.rvAllNotes.adapter = adapter
-        })
-
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun setupEventListener() {
         binding.btnAddNote.setOnClickListener {
             val intent = Intent(requireContext(), AddNoteActivity::class.java)
             intent.putExtra("isOpenedFromNoteLayout", false)
@@ -74,7 +79,13 @@ class NoteFragment : Fragment() {
 
         searchButtonListener()
         searchBarChangeListener()
+    }
 
+    private fun setupObserver() {
+        viewModel.readAllNote.observe(viewLifecycleOwner) {
+            adapter = AllNotesAdapter(requireContext(), it, onNoteLayoutClick)
+            binding.rvAllNotes.adapter = adapter
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -98,15 +109,23 @@ class NoteFragment : Fragment() {
 
     }
 
-    fun searchBarChangeListener() {
-        if(binding.etSearch.isVisible){
+    private fun searchBarChangeListener() {
+        if (binding.etSearch.isVisible) {
             binding.etSearch.addTextChangedListener {
-                if(it == null || it.length == 0){
-                    adapter = AllNotesAdapter(requireContext(), viewModel.readAllNote.value!!, onNoteLayoutClick)
+                if (it == null || it.isEmpty()) {
+                    adapter = AllNotesAdapter(
+                        requireContext(),
+                        viewModel.readAllNote.value!!,
+                        onNoteLayoutClick
+                    )
                     binding.rvAllNotes.adapter = adapter
-                }else{
+                } else {
                     viewModel.searchNoteWithString(it.toString())
-                    adapter = AllNotesAdapter(requireContext(), viewModel.searchedNoteList.value!!, onNoteLayoutClick)
+                    adapter = AllNotesAdapter(
+                        requireContext(),
+                        viewModel.searchedNoteList.value!!,
+                        onNoteLayoutClick
+                    )
                     binding.rvAllNotes.adapter = adapter
                 }
             }
@@ -119,10 +138,10 @@ class NoteFragment : Fragment() {
         val imm: InputMethodManager =
             activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(editText, 0)
-        editText.setTextCursorDrawable(null)
+        editText.textCursorDrawable = null
     }
 
-    fun setupInputStop(editText: EditText) {
+    private fun setupInputStop(editText: EditText) {
         editText.clearFocus()
         val imm: InputMethodManager =
             activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

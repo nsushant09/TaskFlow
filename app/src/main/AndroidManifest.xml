@@ -10,9 +10,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/notesicon"
+        android:icon="@drawable/taskflow_logo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/notesicon"
+        android:roundIcon="@drawable/taskflow_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Note"
         tools:targetApi="31">

@@ -7,7 +7,7 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.AllNoteRecyclerViewLayoutBinding
-import com.neupanesushant.note.model.NoteDetails
+import com.neupanesushant.note.domain.model.NoteDetails
 import kotlin.random.Random
 
 class AllNotesAdapter(val context: Context, val list: List<NoteDetails>, val onNoteLayoutClick : (NoteDetails) -> Unit) :
@@ -54,6 +54,9 @@ class AllNotesAdapter(val context: Context, val list: List<NoteDetails>, val onN
         }
     }
 
+    fun filterString(searchTitle : String){
+
+    }
     override fun getItemCount(): Int {
         return list.size
     }

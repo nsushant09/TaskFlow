@@ -7,12 +7,14 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import com.neupanesushant.note.databinding.ActivityMainBinding
 import com.neupanesushant.note.fragments.note.NoteFragment
 import com.neupanesushant.note.fragments.quote.QuoteFragment
+import com.neupanesushant.note.fragments.todo.TodoHomeFragment
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     private val noteFragment = NoteFragment()
     private val quoteFragment = QuoteFragment()
+    private val todoHomeFragment = TodoHomeFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,8 +23,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        replaceFragment(noteFragment)
-        binding.bottomnavigationbar.setItemSelected(R.id.note, true)
+        replaceFragment(todoHomeFragment)
+        binding.bottomnavigationbar.setItemSelected(R.id.todo, true)
         currentFragmentListener(binding.bottomnavigationbar)
     }
 
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun currentFragmentListener(navigationBarView: ChipNavigationBar) {
+    private fun currentFragmentListener(navigationBarView: ChipNavigationBar) {
         navigationBarView.setOnItemSelectedListener {
             when (it) {
                 R.id.note -> {
@@ -42,6 +44,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.quote -> {
                     replaceFragment(quoteFragment)
+                }
+                R.id.todo -> {
+                    replaceFragment(todoHomeFragment)
                 }
             }
         }

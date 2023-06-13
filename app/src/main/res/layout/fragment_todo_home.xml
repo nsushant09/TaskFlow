@@ -11,21 +11,21 @@
         android:id="@+id/etSearch"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:background="@drawable/add_note_edittext_bg"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btnSearch"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="28dp"
         android:layout_marginHorizontal="16dp"
-        android:hint="@string/search"
-        android:textColorHint="@color/grey_dark"
-        android:paddingHorizontal="16dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/add_note_edittext_bg"
         android:fontFamily="@font/latoregular"
-        android:textColor="?attr/colorOnPrimary"
+        android:hint="@string/search"
+        android:importantForAutofill="no"
         android:inputType="text"
+        android:paddingHorizontal="16dp"
+        android:textColor="?attr/colorOnPrimary"
+        android:textColorHint="@color/grey_dark"
         android:textCursorDrawable="@null"
         android:visibility="gone"
-        android:importantForAutofill="no" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btnSearch"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/btnSearch"
@@ -41,13 +41,13 @@
         app:tint="?attr/colorSecondary" />
 
     <TextView
-        android:id="@+id/NotesTitle"
+        android:id="@+id/ListsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/latoregular"
-        android:text="@string/notes"
+        android:text="@string/lists"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="64sp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -55,18 +55,18 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvAllNotes"
+        android:id="@+id/rvAllGroupLists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="32dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/NotesTitle" />
+        app:layout_constraintTop_toBottomOf="@id/ListsTitle" />
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/btnAddNote"
+        android:id="@+id/btnAddGroup"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="16dp"
@@ -78,14 +78,12 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center"
-            android:layout_marginStart="2dp"
-            android:layout_marginBottom="2dp"
-            android:src="@drawable/ic_add_note"
-            app:tint="@color/white"
-            android:contentDescription="@string/note" />
+            android:contentDescription="@string/tasks"
+            android:src="@drawable/ic_plus"
+            app:tint="@color/white" />
 
     </androidx.cardview.widget.CardView>
 

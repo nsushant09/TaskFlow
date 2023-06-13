@@ -1,11 +1,8 @@
 package com.neupanesushant.note.fragments.note
 
-import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
-import com.neupanesushant.note.model.NoteDatabase
-import com.neupanesushant.note.model.NoteDetailsDAO
-import com.neupanesushant.note.model.NoteDetails
+import com.neupanesushant.note.domain.repo.NoteDetailsDAO
+import com.neupanesushant.note.domain.model.NoteDetails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

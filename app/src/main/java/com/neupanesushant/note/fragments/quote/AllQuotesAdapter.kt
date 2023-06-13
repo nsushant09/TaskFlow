@@ -10,7 +10,7 @@ import com.neupanesushant.note.databinding.AllQuoteRecyclerViewLayoutBinding
 import com.neupanesushant.note.fragments.quote.model.Quote
 import kotlin.random.Random
 
-class AllQuotesAdapter(val context : Context, val list : List<Quote>) : RecyclerView.Adapter<AllQuotesAdapter.ViewHolder>(){
+class AllQuotesAdapter(val context : Context, private val list : List<Quote>) : RecyclerView.Adapter<AllQuotesAdapter.ViewHolder>(){
 
     inner class ViewHolder(binding : AllQuoteRecyclerViewLayoutBinding) : RecyclerView.ViewHolder(binding.root){
         val layout = binding.allQuoteLinearLayout
@@ -24,8 +24,7 @@ class AllQuotesAdapter(val context : Context, val list : List<Quote>) : Recycler
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val random = Random.nextInt(1, 6)
-        when (random) {
+        when (Random.nextInt(1, 6)) {
             1 -> holder.layout.setBackgroundResource(R.drawable.all_quote_bg_darkblue)
             2 -> holder.layout.setBackgroundResource(R.drawable.all_quote_bg_darkcreame)
             3 -> holder.layout.setBackgroundResource(R.drawable.all_quote_bg_darkpink)
@@ -37,7 +36,7 @@ class AllQuotesAdapter(val context : Context, val list : List<Quote>) : Recycler
         } else {
             holder.itemView.animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
         }
-        holder.quoteContent.text = list.get(position).body
+        holder.quoteContent.text = list[position].body
     }
 
     override fun getItemCount(): Int {

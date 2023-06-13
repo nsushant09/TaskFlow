@@ -1,0 +1,15 @@
+package com.neupanesushant.note.domain.model
+
+import android.os.Parcelable
+import androidx.room.*
+import com.neupanesushant.note.data.RoomConvertors
+
+@Entity(tableName = "taskgroup_table")
+@TypeConverters(RoomConvertors::class)
+@kotlinx.parcelize.Parcelize
+data class TaskGroup(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
+    val name: String,
+    val tasks : List<Task>
+) : Parcelable

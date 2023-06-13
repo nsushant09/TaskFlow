@@ -1,11 +1,11 @@
 package com.neupanesushant.note.fragments.quote
 
-import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.neupanesushant.note.fragments.quote.model.Quote
 import com.neupanesushant.note.fragments.quote.model.QuoteImpl
-import com.neupanesushant.note.fragments.quote.model.QuotesAPI
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class QuoteViewModel(private val quoteImpl: QuoteImpl) : ViewModel() {

@@ -1,4 +1,4 @@
-package com.neupanesushant.note.model
+package com.neupanesushant.note.domain.model
 
 import android.os.Parcelable
 import androidx.room.Entity

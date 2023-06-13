@@ -1,7 +1,8 @@
-package com.neupanesushant.note.model
+package com.neupanesushant.note.domain.repo
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.neupanesushant.note.domain.model.NoteDetails
 
 @Dao
 interface NoteDetailsDAO{

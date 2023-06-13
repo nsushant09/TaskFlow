@@ -36,7 +36,8 @@
             android:fontFamily="@font/latoregular"
             android:text="@string/notes"
             android:textColor="@color/primarypurple"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:ignore="RelativeOverlap" />
 
         <ImageView
             android:id="@+id/btnMenu"
@@ -73,7 +74,7 @@
         android:background="@drawable/add_note_edittext_bg"
         android:inputType="text"
         android:textCursorDrawable="@null"
-        />
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/etDescription"

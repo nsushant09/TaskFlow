@@ -19,10 +19,10 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class QuoteFragment : Fragment() {
 
-    private lateinit var _binding : FragmentQuoteBinding
+    private lateinit var _binding: FragmentQuoteBinding
     private val binding get() = _binding
-    lateinit var adapter : AllQuotesAdapter
-    private val viewModel : QuoteViewModel by inject()
+    private lateinit var adapter: AllQuotesAdapter
+    private val viewModel: QuoteViewModel by inject()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,24 +34,36 @@ class QuoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
+        setupEventListener()
+        setupObserver()
+    }
 
-        binding.QuoteTitle.animation = AnimationUtils.loadAnimation(requireContext(), androidx.appcompat.R.anim.abc_slide_in_top)
+    private fun setupView() {
+        binding.QuoteTitle.animation = AnimationUtils.loadAnimation(
+            requireContext(),
+            androidx.appcompat.R.anim.abc_slide_in_top
+        )
         binding.rvAllQuotes.layoutManager = LinearLayoutManager(requireContext())
+    }
 
-        viewModel.listofQuotes.observe(viewLifecycleOwner, Observer{
+    private fun setupObserver() {
+        viewModel.listofQuotes.observe(viewLifecycleOwner, Observer {
             adapter = AllQuotesAdapter(requireContext(), it)
             binding.rvAllQuotes.adapter = adapter
         })
 
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer{
-            if(it){
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer {
+            if (it) {
                 binding.progressBar.visibility = View.VISIBLE
                 binding.rvAllQuotes.visibility = View.GONE
-            }else{
+            } else {
                 binding.progressBar.visibility = View.GONE
                 binding.rvAllQuotes.visibility = View.VISIBLE
             }
         })
     }
+
+    private fun setupEventListener() {}
 
 }

@@ -12,9 +12,8 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.ActivityAddNoteBinding
-import com.neupanesushant.note.model.NoteDetails
+import com.neupanesushant.note.domain.model.NoteDetails
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.time.LocalDate
 
 class AddNoteActivity : AppCompatActivity() {
@@ -39,6 +38,18 @@ class AddNoteActivity : AppCompatActivity() {
             setupInputStart(binding.etTitle)
         }
 
+        setupView()
+        setupEventListener()
+        setupObserver()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupView() {
+        setupOptionsMenu()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun setupEventListener() {
         binding.etDescription.setOnClickListener {
             if (binding.etTitle.isFocused) {
                 binding.etTitle.clearFocus()
@@ -48,7 +59,9 @@ class AddNoteActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             finish()
         }
-        setupOptionsMenu()
+    }
+
+    private fun setupObserver() {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -82,10 +95,8 @@ class AddNoteActivity : AppCompatActivity() {
                 }
             }
         } else {
-            if (description.isNotEmpty()) {
+            if (description.isNotEmpty() && title.isNotEmpty()) {
                 viewModel.addNoteDetails(NoteDetails(0, title, description, date))
-
-
             }
         }
     }
@@ -107,7 +118,7 @@ class AddNoteActivity : AppCompatActivity() {
         }
     }
 
-    fun onShareClick() {
+    private fun onShareClick() {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_SUBJECT, binding.etTitle.text.toString())
