@@ -7,14 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neupanesushant.note.R
+import com.neupanesushant.note.databinding.AllQuoteRecyclerViewLayoutBinding
 import com.neupanesushant.note.databinding.FragmentQuoteBinding
-import org.koin.android.compat.ScopeCompat.getViewModel
+import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
+import com.neupanesushant.note.domain.model.Quote
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import kotlin.random.Random
 
 
 class QuoteFragment : Fragment() {
@@ -49,8 +49,28 @@ class QuoteFragment : Fragment() {
 
     private fun setupObserver() {
         viewModel.listofQuotes.observe(viewLifecycleOwner, Observer {
-            adapter = AllQuotesAdapter(requireContext(), it)
-            binding.rvAllQuotes.adapter = adapter
+            var position = 0;
+            binding.rvAllQuotes.adapter = GenericRecyclerAdapter(
+                it, AllQuoteRecyclerViewLayoutBinding::class.java
+            ) { binding: AllQuoteRecyclerViewLayoutBinding, item: Quote, list: List<Quote> ->
+                when (Random.nextInt(1, 6)) {
+                    1 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkblue)
+                    2 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkcreame)
+                    3 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkpink)
+                    4 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkgreen)
+                    5 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkyellow)
+                }
+
+                if (position % 2 == 0) {
+                    binding.root.animation =
+                        AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+                } else {
+                    binding.root.animation =
+                        AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+                }
+                binding.tvQuoteContent.text = item.body
+                position++;
+            }
         })
 
         viewModel.isLoading.observe(viewLifecycleOwner, Observer {

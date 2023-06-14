@@ -1,5 +1,6 @@
 package com.neupanesushant.note.fragments.quote.model
 
+import com.neupanesushant.note.domain.model.Quote
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext

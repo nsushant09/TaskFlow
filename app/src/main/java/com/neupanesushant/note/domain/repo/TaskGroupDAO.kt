@@ -19,5 +19,5 @@ interface TaskGroupDAO {
     suspend fun delete(taskGroup: TaskGroup)
 
     @RawQuery
-    fun getAllTaskFromGroup(query: SupportSQLiteQuery): List<Task>
+    fun getAllTaskGroup(query: SupportSQLiteQuery): List<TaskGroup>
 }

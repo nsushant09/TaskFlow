@@ -1,4 +1,4 @@
-package com.neupanesushant.note.fragments.quote.model
+package com.neupanesushant.note.domain.model
 
 data class Quote(
     val author: String,

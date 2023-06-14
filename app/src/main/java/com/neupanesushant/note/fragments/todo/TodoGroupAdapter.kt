@@ -37,16 +37,16 @@ class TodoGroupAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val obj = list[position]
 
-        holder.name.text = obj.name
-        holder.totalTasks.text = "${obj.tasks.size} tasks"
-        val completed = obj.tasks.filter { it.isCompleted }.size
-        holder.completedTasks.text = "$completed completed"
-        val percentage = (completed / obj.tasks.size) * 100
-        holder.progress.setProgress(percentage, true)
-
-        holder.itemView.setOnClickListener {
-            onClick(obj.id)
-        }
+//        holder.name.text = obj.name
+//        holder.totalTasks.text = "${obj.tasks.size} tasks"
+//        val completed = obj.tasks.filter { it.isCompleted }.size
+//        holder.completedTasks.text = "$completed completed"
+//        val percentage = (completed / obj.tasks.size) * 100
+//        holder.progress.setProgress(percentage, true)
+//
+//        holder.itemView.setOnClickListener {
+//            onClick(obj.id)
+//        }
     }
 
 }

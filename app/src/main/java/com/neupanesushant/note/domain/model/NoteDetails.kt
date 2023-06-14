@@ -3,10 +3,9 @@ package com.neupanesushant.note.domain.model
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import com.neupanesushant.note.extras.Constants
 
-@Entity(tableName = "notedetails_table")
+@Entity(tableName = Constants.NOTEDETAILS_TABLE)
 @kotlinx.parcelize.Parcelize
 data class NoteDetails (
     @PrimaryKey(autoGenerate = true)

@@ -1,6 +1,5 @@
 package com.neupanesushant.note.fragments.todo
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,14 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.neupanesushant.note.R
-import com.neupanesushant.note.Utils
+import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.databinding.FragmentTodoHomeBinding
 import org.koin.android.ext.android.inject
 

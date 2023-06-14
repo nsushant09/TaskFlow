@@ -19,6 +19,6 @@ val vmModule = module {
     }
 
     viewModel{
-        TodoHomeViewModel()
+        TodoHomeViewModel(get(), get())
     }
 }

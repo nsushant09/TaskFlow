@@ -7,7 +7,7 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.AllQuoteRecyclerViewLayoutBinding
-import com.neupanesushant.note.fragments.quote.model.Quote
+import com.neupanesushant.note.domain.model.Quote
 import kotlin.random.Random
 
 class AllQuotesAdapter(val context : Context, private val list : List<Quote>) : RecyclerView.Adapter<AllQuotesAdapter.ViewHolder>(){
