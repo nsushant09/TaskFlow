@@ -32,7 +32,7 @@ class TodoHomeViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
 
     fun addNewGroup(groupName: String) {
         uiScope.launch {
-            taskGroupDAO.insert(TaskGroup(0, groupName))
+            taskGroupDAO.insert(TaskGroup(0, groupName, emptyList()))
         }
     }
 

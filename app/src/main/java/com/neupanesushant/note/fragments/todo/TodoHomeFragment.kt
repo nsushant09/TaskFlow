@@ -1,5 +1,6 @@
 package com.neupanesushant.note.fragments.todo
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.neupanesushant.note.R
 import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.databinding.FragmentTodoHomeBinding
+import com.neupanesushant.note.databinding.ItemTodoGroupBinding
+import com.neupanesushant.note.domain.model.TaskGroup
+import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
 
 class TodoHomeFragment : Fragment() {
@@ -69,8 +73,25 @@ class TodoHomeFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupObserver() {
+        viewModel.allGroup.observe(viewLifecycleOwner) {
+            binding.rvAllGroupLists.adapter = GenericRecyclerAdapter(
+                it,
+                ItemTodoGroupBinding::class.java
+            ) { binding: ItemTodoGroupBinding, item: TaskGroup, _: List<TaskGroup> ->
 
+                val completed = item.tasks.filter { it.isCompleted }.size
+
+                binding.apply {
+                    tvGroupName.text = item.name
+                    tvTotalTaskValue.text = "${item.tasks.size} tasks"
+                    tvCompletedTaskValue.text = "$completed completed"
+                    lpiTaskProgress.setProgress((completed / item.tasks.size) * 100, true)
+                }
+
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
