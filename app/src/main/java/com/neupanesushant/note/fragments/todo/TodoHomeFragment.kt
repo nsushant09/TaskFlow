@@ -26,6 +26,8 @@ class TodoHomeFragment : Fragment() {
     private val binding get() = _binding
     private val viewModel: TodoHomeViewModel by inject()
 
+    private lateinit var allGroupsAdapter: GenericRecyclerAdapter<TaskGroup, ItemTodoGroupBinding>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -69,28 +71,39 @@ class TodoHomeFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun setupObserver() {
         viewModel.allGroup.observe(viewLifecycleOwner) {
-            binding.rvAllGroupLists.adapter = GenericRecyclerAdapter(
-                it,
-                ItemTodoGroupBinding::class.java
-            ) { binding: ItemTodoGroupBinding, item: TaskGroup, _: List<TaskGroup> ->
 
-                val completed = item.tasks.filter { it.isCompleted }.size
+            if (!this::allGroupsAdapter.isInitialized) {
+                allGroupsAdapter = GenericRecyclerAdapter(
+                    it,
+                    ItemTodoGroupBinding::class.java
+                ) { binding: ItemTodoGroupBinding, item: TaskGroup, _: List<TaskGroup> ->
 
-                binding.apply {
-                    tvGroupName.text = item.name
-                    tvTotalTaskValue.text = "${item.tasks.size} tasks"
-                    tvCompletedTaskValue.text = "$completed completed"
-                    try {
-                        lpiTaskProgress.setProgress((completed / item.tasks.size) * 100, false)
-                    } catch (e: java.lang.Exception) {
-                        lpiTaskProgress.setProgress(0, false)
+                    val completed = item.tasks.filter { it.isCompleted }.size
+
+                    binding.apply {
+                        tvGroupName.text = item.name
+                        tvTotalTaskValue.text = "${item.tasks.size} tasks"
+                        tvCompletedTaskValue.text = "$completed completed"
+                        try {
+                            lpiTaskProgress.setProgress(
+                                (completed / item.tasks.size) * 100,
+                                false
+                            )
+                        } catch (e: java.lang.Exception) {
+                            lpiTaskProgress.setProgress(0, false)
+                        }
+                    }
+
+                    binding.root.setOnClickListener {
+                        requireContext().showText("Id is ${item.id}")
                     }
                 }
 
-                binding.root.setOnClickListener {
-                    requireContext().showText("Id is ${item.id}")
-                }
+                binding.rvAllGroupLists.adapter = allGroupsAdapter
+            } else {
+                allGroupsAdapter.refreshData(it)
             }
+
         }
     }
 
