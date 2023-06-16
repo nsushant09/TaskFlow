@@ -6,10 +6,12 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import com.neupanesushant.note.domain.model.NoteDetails
 import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.domain.model.TaskGroup
+import com.neupanesushant.note.extras.Constants
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskGroupDAO {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(taskGroup: TaskGroup)
 
     @Update
@@ -18,6 +20,6 @@ interface TaskGroupDAO {
     @Delete
     suspend fun delete(taskGroup: TaskGroup)
 
-    @RawQuery
-    fun getAllTaskGroup(query: SupportSQLiteQuery): List<TaskGroup>
+    @Query("SELECT * FROM " + Constants.TASKGROUP_TABLE)
+    fun getAllTaskGroup(): Flow<List<TaskGroup>?>
 }

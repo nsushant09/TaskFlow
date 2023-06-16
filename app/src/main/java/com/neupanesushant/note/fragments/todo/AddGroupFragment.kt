@@ -38,6 +38,7 @@ class AddGroupFragment : BottomSheetDialogFragment() {
         binding.btnAddGroup.setOnClickListener {
             if (isValidGroupName()) {
                 viewModel.addNewGroup(binding.etAddGroupName.text.toString())
+                this.dismiss()
             }
         }
     }

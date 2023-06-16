@@ -21,7 +21,6 @@ class QuoteFragment : Fragment() {
 
     private lateinit var _binding: FragmentQuoteBinding
     private val binding get() = _binding
-    private lateinit var adapter: AllQuotesAdapter
     private val viewModel: QuoteViewModel by inject()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,12 +52,12 @@ class QuoteFragment : Fragment() {
             binding.rvAllQuotes.adapter = GenericRecyclerAdapter(
                 it, AllQuoteRecyclerViewLayoutBinding::class.java
             ) { binding: AllQuoteRecyclerViewLayoutBinding, item: Quote, list: List<Quote> ->
-                when (Random.nextInt(1, 6)) {
-                    1 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkblue)
-                    2 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkcreame)
-                    3 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkpink)
-                    4 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkgreen)
-                    5 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkyellow)
+                when (position % 5) {
+                    0 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkblue)
+                    1 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkcreame)
+                    2 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkpink)
+                    3 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkgreen)
+                    4 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkyellow)
                 }
 
                 if (position % 2 == 0) {

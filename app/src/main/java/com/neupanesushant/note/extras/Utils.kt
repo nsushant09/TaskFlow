@@ -3,9 +3,11 @@ package com.neupanesushant.note.extras
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.os.Message
 import android.provider.CalendarContract.Calendars
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import java.time.LocalDate
 import java.util.*
@@ -27,6 +29,10 @@ object Utils {
         val imm: InputMethodManager =
             activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    fun Context.showText(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
 }

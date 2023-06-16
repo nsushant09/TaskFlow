@@ -9,6 +9,8 @@ import com.neupanesushant.note.domain.model.TaskGroup
 import com.neupanesushant.note.domain.repo.TaskDAO
 import com.neupanesushant.note.domain.repo.TaskGroupDAO
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 
 class TodoHomeViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: TaskGroupDAO) :
     ViewModel() {
@@ -24,6 +26,7 @@ class TodoHomeViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
 
     init {
         _isSearchFieldVisible.value = false
+        getAllGroup()
     }
 
     fun setSearchFieldVisibility(boolean: Boolean) {
@@ -36,11 +39,13 @@ class TodoHomeViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
         }
     }
 
-    fun getAllGroup() {
+    private fun getAllGroup() {
         uiScope.launch {
-            val allGroupsTemp =
-                taskGroupDAO.getAllTaskGroup(SimpleSQLiteQuery("SELECT * FROM " + Constants.TASKGROUP_TABLE))
-            _allGroup.postValue(allGroupsTemp)
+            taskGroupDAO.getAllTaskGroup()
+                .flowOn(Dispatchers.IO)
+                .collectLatest {
+                    _allGroup.postValue(it)
+                }
         }
     }
 

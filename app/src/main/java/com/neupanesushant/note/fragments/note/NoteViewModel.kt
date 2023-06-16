@@ -7,39 +7,42 @@ import androidx.lifecycle.viewModelScope
 import com.neupanesushant.note.domain.model.NoteDetails
 import com.neupanesushant.note.domain.repo.NoteDetailsDAO
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class NoteViewModel(private val noteDetailsDao: NoteDetailsDAO) : ViewModel() {
 
-    lateinit var readAllNote: LiveData<List<NoteDetails>>
+    private val cacheAllNote: MutableLiveData<List<NoteDetails>> = MutableLiveData()
 
     private val _isSearchFieldVisible = MutableLiveData<Boolean>()
     val isSearchFieldVisible: LiveData<Boolean> get() = _isSearchFieldVisible
 
-    private val _searchedNoteList = MutableLiveData<List<NoteDetails>>()
-    val searchedNoteList: LiveData<List<NoteDetails>> get() = _searchedNoteList
     private val tempArrayListForSearchedNote = ArrayList<NoteDetails>()
 
+    val notesToDisplay: MutableLiveData<List<NoteDetails>> = MutableLiveData()
+
     init {
-        readAllNote()
-        _searchedNoteList.value = listOf()
+        cacheAllNote()
         _isSearchFieldVisible.value = false
     }
 
-    private fun readAllNote() {
-        readAllNote = noteDetailsDao.readAllNote()
-    }
-
-    fun addNoteDetails(noteDetails: NoteDetails) {
-        viewModelScope.launch(Dispatchers.IO) {
-            noteDetailsDao.insert(noteDetails)
+    private fun cacheAllNote() {
+        viewModelScope.launch {
+            noteDetailsDao.readAllNote()
+                .flowOn(Dispatchers.IO)
+                .collectLatest {
+                    cacheAllNote.postValue(it)
+                    notesToDisplay.postValue(it)
+//                    if (notesToDisplay.value == null) {
+//                        refreshNotesToDisplay()
+//                    }
+                }
         }
     }
 
-    fun deleteNoteDetails(noteDetails: NoteDetails) {
-        viewModelScope.launch(Dispatchers.IO) {
-            noteDetailsDao.delete(noteDetails)
-        }
+    fun refreshNotesToDisplay() {
+        notesToDisplay.value = cacheAllNote.value
     }
 
     fun setSearchFieldVisibility(boolean: Boolean) {
@@ -48,17 +51,17 @@ class NoteViewModel(private val noteDetailsDao: NoteDetailsDAO) : ViewModel() {
 
     fun searchNoteWithString(string: String) {
         tempArrayListForSearchedNote.clear()
-        readAllNote.value?.forEach {
-            val listOfTitleWords = it.title.split(" ")
-            if (isStringInTitle(listOfTitleWords, it.title, string)) {
+        cacheAllNote.value?.forEach {
+            if (isTargetInString(it.title, string)) {
                 tempArrayListForSearchedNote.add(it)
-                _searchedNoteList.value = tempArrayListForSearchedNote
             }
         }
+        notesToDisplay.value = tempArrayListForSearchedNote
     }
 
-    private fun isStringInTitle(list: List<String>, title: String, target: String): Boolean {
+    private fun isTargetInString(string: String, target: String): Boolean {
         val lengthOfTarget = target.length
+        val list = string.split(" ")
         for (i in list) {
             try {
                 if (i.substring(0, lengthOfTarget).equals(target, true)) {
@@ -70,9 +73,9 @@ class NoteViewModel(private val noteDetailsDao: NoteDetailsDAO) : ViewModel() {
 
         }
 
-        for (i in title.indices) {
+        for (i in string.indices) {
             try {
-                if (title.substring(i, i + lengthOfTarget).equals(target, true)) {
+                if (string.substring(i, i + lengthOfTarget).equals(target, true)) {
                     return true
                 }
             } catch (_: Exception) {

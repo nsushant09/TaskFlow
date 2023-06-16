@@ -8,7 +8,7 @@ import com.neupanesushant.note.domain.model.Task
 
 @Dao
 interface TaskDAO {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(task: Task)
 
     @Update

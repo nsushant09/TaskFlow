@@ -31,6 +31,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:hint="@string/group_name"
         app:boxStrokeColor="@color/primarypurple"
+        app:hintTextColor="@color/black"
 
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusTopEnd="16dp"
@@ -41,7 +42,10 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etAddGroupName"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 

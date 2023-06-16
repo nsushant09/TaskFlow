@@ -16,6 +16,7 @@ import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.databinding.FragmentTodoHomeBinding
 import com.neupanesushant.note.databinding.ItemTodoGroupBinding
 import com.neupanesushant.note.domain.model.TaskGroup
+import com.neupanesushant.note.extras.Utils.showText
 import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
 
@@ -24,10 +25,6 @@ class TodoHomeFragment : Fragment() {
     private lateinit var _binding: FragmentTodoHomeBinding
     private val binding get() = _binding
     private val viewModel: TodoHomeViewModel by inject()
-
-    private val onGroupClick: (id: Int) -> Unit = { id ->
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,10 +43,6 @@ class TodoHomeFragment : Fragment() {
     }
 
     private fun setupView() {
-        binding.ListsTitle.animation = AnimationUtils.loadAnimation(
-            requireContext(),
-            androidx.appcompat.R.anim.abc_slide_in_top
-        )
 
         binding.rvAllGroupLists.animation = AnimationUtils.loadAnimation(
             context,
@@ -87,9 +80,16 @@ class TodoHomeFragment : Fragment() {
                     tvGroupName.text = item.name
                     tvTotalTaskValue.text = "${item.tasks.size} tasks"
                     tvCompletedTaskValue.text = "$completed completed"
-                    lpiTaskProgress.setProgress((completed / item.tasks.size) * 100, true)
+                    try {
+                        lpiTaskProgress.setProgress((completed / item.tasks.size) * 100, false)
+                    } catch (e: java.lang.Exception) {
+                        lpiTaskProgress.setProgress(0, false)
+                    }
                 }
 
+                binding.root.setOnClickListener {
+                    requireContext().showText("Id is ${item.id}")
+                }
             }
         }
     }
