@@ -81,7 +81,7 @@ class NoteFragment : Fragment() {
     private fun setupObserver() {
         viewModel.notesToDisplay.observe(viewLifecycleOwner) {
             it?.let {
-                if (!this::adapter.isInitialized) {
+                if (binding.rvAllNotes.adapter == null) {
                     adapter = AllNotesAdapter(requireContext(), it, onNoteLayoutClick)
                     binding.rvAllNotes.adapter = adapter
                 } else {

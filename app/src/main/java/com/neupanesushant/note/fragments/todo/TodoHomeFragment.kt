@@ -72,7 +72,7 @@ class TodoHomeFragment : Fragment() {
     private fun setupObserver() {
         viewModel.allGroup.observe(viewLifecycleOwner) {
 
-            if (!this::allGroupsAdapter.isInitialized) {
+            if (binding.rvAllGroupLists.adapter == null) {
                 allGroupsAdapter = GenericRecyclerAdapter(
                     it,
                     ItemTodoGroupBinding::class.java
@@ -98,7 +98,6 @@ class TodoHomeFragment : Fragment() {
                         requireContext().showText("Id is ${item.id}")
                     }
                 }
-
                 binding.rvAllGroupLists.adapter = allGroupsAdapter
             } else {
                 allGroupsAdapter.refreshData(it)

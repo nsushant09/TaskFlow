@@ -49,8 +49,9 @@ class QuoteFragment : Fragment() {
     private fun setupObserver() {
         viewModel.listofQuotes.observe(viewLifecycleOwner, Observer {
             var position = 0;
-            binding.rvAllQuotes.adapter = GenericRecyclerAdapter(
-                it, AllQuoteRecyclerViewLayoutBinding::class.java
+            val adapter = GenericRecyclerAdapter(
+                it,
+                AllQuoteRecyclerViewLayoutBinding::class.java
             ) { binding: AllQuoteRecyclerViewLayoutBinding, item: Quote, list: List<Quote> ->
                 when (position % 5) {
                     0 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkblue)
@@ -70,6 +71,7 @@ class QuoteFragment : Fragment() {
                 binding.tvQuoteContent.text = item.body
                 position++;
             }
+            binding.rvAllQuotes.adapter = adapter
         })
 
         viewModel.isLoading.observe(viewLifecycleOwner, Observer {
