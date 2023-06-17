@@ -11,13 +11,14 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.RequiresApi
-import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentNoteBinding
+import com.neupanesushant.note.databinding.ItemAllNoteBinding
 import com.neupanesushant.note.domain.model.NoteDetails
+import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
 
 
@@ -25,7 +26,7 @@ class NoteFragment : Fragment() {
 
     private lateinit var _binding: FragmentNoteBinding
     private val binding get() = _binding
-    private lateinit var adapter: AllNotesAdapter
+    private lateinit var adapter: GenericRecyclerAdapter<NoteDetails, ItemAllNoteBinding>
     private val viewModel: NoteViewModel by inject()
 
 
@@ -82,13 +83,41 @@ class NoteFragment : Fragment() {
         viewModel.notesToDisplay.observe(viewLifecycleOwner) {
             it?.let {
                 if (binding.rvAllNotes.adapter == null) {
-                    adapter = AllNotesAdapter(requireContext(), it, onNoteLayoutClick)
+                    adapter = GenericRecyclerAdapter(
+                        it, ItemAllNoteBinding::class.java
+                    ) { binding: ItemAllNoteBinding, item: NoteDetails, _: List<NoteDetails>, position: Int ->
+                        when (position % 5) {
+                            1 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightblue)
+                            2 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightcreame)
+                            3 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightgreen)
+                            4 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightpink)
+                            0 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightorange)
+                        }
+                        if (position % 2 == 0) {
+                            binding.root.animation =
+                                AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+                        } else {
+                            binding.root.animation =
+                                AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+                        }
+
+                        binding.tvTitle.text = item.title
+                        binding.tvDescription.text = item.description
+                        binding.tvDate.text = item.date
+                        binding.root.setOnClickListener {
+                            onNoteLayoutClick(item)
+                        }
+                    }
                     binding.rvAllNotes.adapter = adapter
                 } else {
                     adapter.refreshData(it)
                 }
             }
         }
+    }
+
+    private fun setupNotesToDisplay() {
+
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)

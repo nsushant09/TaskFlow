@@ -5,6 +5,8 @@ import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.neupanesushant.note.domain.model.NoteDetails
 import com.neupanesushant.note.domain.model.Task
+import com.neupanesushant.note.domain.model.TaskGroup
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDAO {
@@ -17,9 +19,9 @@ interface TaskDAO {
     @Delete
     suspend fun delete(task: Task)
 
-    @RawQuery
-    suspend fun getTodayEndingTasks(query: SupportSQLiteQuery): List<Task>
+    @RawQuery(observedEntities = [Task::class, TaskGroup::class])
+    fun getTodayEndingTasks(query: SupportSQLiteQuery): Flow<List<Task>>
 
-    @RawQuery
-    suspend fun getTaskFromGroupID(query: SupportSQLiteQuery): List<Task>
+    @RawQuery(observedEntities = [Task::class])
+    fun getTaskFromGroupID(query: SupportSQLiteQuery): Flow<List<Task>>
 }

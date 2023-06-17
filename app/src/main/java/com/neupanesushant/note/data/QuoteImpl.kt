@@ -1,6 +1,7 @@
-package com.neupanesushant.note.fragments.quote.model
+package com.neupanesushant.note.data
 
 import com.neupanesushant.note.domain.model.Quote
+import com.neupanesushant.note.domain.repo.QuotesAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext

@@ -2,8 +2,8 @@ package com.neupanesushant.note.koinmodules
 
 import android.app.Application
 import androidx.room.Room
-import com.neupanesushant.note.fragments.quote.model.QuoteImpl
-import com.neupanesushant.note.fragments.quote.model.QuotesAPI
+import com.neupanesushant.note.data.QuoteImpl
+import com.neupanesushant.note.domain.repo.QuotesAPI
 import com.neupanesushant.note.domain.model.Database
 import com.neupanesushant.note.domain.repo.NoteDetailsDAO
 import com.neupanesushant.note.domain.repo.TaskDAO

@@ -7,6 +7,7 @@
     android:background="@color/white"
     tools:context=".fragments.note.NoteFragment">
 
+
     <EditText
         android:id="@+id/etSearch"
         android:layout_width="0dp"
@@ -40,16 +41,58 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="?attr/colorSecondary" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvAllGroupLists"
+    <TextView
+        android:id="@+id/GroupsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/latoregular"
+        android:text="@string/groups"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="64sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnSearch" />
+
+    <include
+        android:id="@+id/layoutEmptyMessage"
+        layout="@layout/empty_message_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
+
         android:layout_marginTop="32dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnSearch" />
+        app:layout_constraintTop_toBottomOf="@id/GroupsTitle"
+        />
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/GroupsTitle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvAllGroupLists"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="32dp"
+                android:overScrollMode="never"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/GroupsTitle" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnAddGroup"

@@ -1,20 +1,18 @@
 package com.neupanesushant.note.fragments.quote
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neupanesushant.note.R
-import com.neupanesushant.note.databinding.AllQuoteRecyclerViewLayoutBinding
 import com.neupanesushant.note.databinding.FragmentQuoteBinding
-import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
+import com.neupanesushant.note.databinding.ItemAllQuoteBinding
 import com.neupanesushant.note.domain.model.Quote
+import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
-import kotlin.random.Random
 
 
 class QuoteFragment : Fragment() {
@@ -25,7 +23,7 @@ class QuoteFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentQuoteBinding.inflate(layoutInflater)
         return binding.root
@@ -47,12 +45,26 @@ class QuoteFragment : Fragment() {
     }
 
     private fun setupObserver() {
-        viewModel.listofQuotes.observe(viewLifecycleOwner, Observer {
-            var position = 0;
+
+        setupListOfQuotes()
+
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.rvAllQuotes.visibility = View.GONE
+            } else {
+                binding.progressBar.visibility = View.GONE
+                binding.rvAllQuotes.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun setupListOfQuotes() {
+        viewModel.listofQuotes.observe(viewLifecycleOwner) {
             val adapter = GenericRecyclerAdapter(
                 it,
-                AllQuoteRecyclerViewLayoutBinding::class.java
-            ) { binding: AllQuoteRecyclerViewLayoutBinding, item: Quote, list: List<Quote> ->
+                ItemAllQuoteBinding::class.java
+            ) { binding: ItemAllQuoteBinding, item: Quote, _: List<Quote>, position: Int ->
                 when (position % 5) {
                     0 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkblue)
                     1 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkcreame)
@@ -69,20 +81,9 @@ class QuoteFragment : Fragment() {
                         AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
                 }
                 binding.tvQuoteContent.text = item.body
-                position++;
             }
             binding.rvAllQuotes.adapter = adapter
-        })
-
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                binding.progressBar.visibility = View.VISIBLE
-                binding.rvAllQuotes.visibility = View.GONE
-            } else {
-                binding.progressBar.visibility = View.GONE
-                binding.rvAllQuotes.visibility = View.VISIBLE
-            }
-        })
+        }
     }
 
     private fun setupEventListener() {}

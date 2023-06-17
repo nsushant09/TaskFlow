@@ -10,8 +10,7 @@
         <item name="colorSecondaryVariant">@color/purplevariant</item>
         <item name="colorOnSecondary">@color/grey_dark</item>
         <!-- Status bar color. -->
-        <item name="textAppearanceHeadline1"></item>
-        <item name="android:statusBarColor" >?attr/colorOnPrimary</item>
+        <item name="android:statusBarColor">?attr/colorOnPrimary</item>
         <!-- Customize your theme here. -->
         <item name="popupMenuStyle">@style/popupMenuStyle</item>
 

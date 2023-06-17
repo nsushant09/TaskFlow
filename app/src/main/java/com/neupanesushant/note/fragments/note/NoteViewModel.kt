@@ -20,7 +20,8 @@ class NoteViewModel(private val noteDetailsDao: NoteDetailsDAO) : ViewModel() {
 
     private val tempArrayListForSearchedNote = ArrayList<NoteDetails>()
 
-    val notesToDisplay: MutableLiveData<List<NoteDetails>> = MutableLiveData()
+    private var _notesToDisplay: MutableLiveData<List<NoteDetails>> = MutableLiveData()
+    val notesToDisplay: LiveData<List<NoteDetails>> get() = _notesToDisplay
 
     init {
         cacheAllNote()
@@ -33,16 +34,13 @@ class NoteViewModel(private val noteDetailsDao: NoteDetailsDAO) : ViewModel() {
                 .flowOn(Dispatchers.IO)
                 .collectLatest {
                     cacheAllNote.postValue(it)
-                    notesToDisplay.postValue(it)
-//                    if (notesToDisplay.value == null) {
-//                        refreshNotesToDisplay()
-//                    }
+                    _notesToDisplay.postValue(it)
                 }
         }
     }
 
     fun refreshNotesToDisplay() {
-        notesToDisplay.value = cacheAllNote.value
+        _notesToDisplay.value = cacheAllNote.value
     }
 
     fun setSearchFieldVisibility(boolean: Boolean) {
@@ -56,7 +54,7 @@ class NoteViewModel(private val noteDetailsDao: NoteDetailsDAO) : ViewModel() {
                 tempArrayListForSearchedNote.add(it)
             }
         }
-        notesToDisplay.value = tempArrayListForSearchedNote
+        _notesToDisplay.value = tempArrayListForSearchedNote
     }
 
     private fun isTargetInString(string: String, target: String): Boolean {

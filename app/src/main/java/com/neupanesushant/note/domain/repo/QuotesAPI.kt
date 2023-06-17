@@ -1,4 +1,4 @@
-package com.neupanesushant.note.fragments.quote.model
+package com.neupanesushant.note.domain.repo
 
 import com.neupanesushant.note.domain.model.QuoteDate
 import retrofit2.http.GET

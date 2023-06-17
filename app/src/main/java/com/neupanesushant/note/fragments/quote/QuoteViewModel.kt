@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neupanesushant.note.domain.model.Quote
-import com.neupanesushant.note.fragments.quote.model.QuoteImpl
+import com.neupanesushant.note.data.QuoteImpl
 import kotlinx.coroutines.launch
 
 class QuoteViewModel(private val quoteImpl: QuoteImpl) : ViewModel() {

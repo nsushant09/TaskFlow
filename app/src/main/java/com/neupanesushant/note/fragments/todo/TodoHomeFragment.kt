@@ -1,6 +1,7 @@
 package com.neupanesushant.note.fragments.todo
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -16,7 +17,7 @@ import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.databinding.FragmentTodoHomeBinding
 import com.neupanesushant.note.databinding.ItemTodoGroupBinding
 import com.neupanesushant.note.domain.model.TaskGroup
-import com.neupanesushant.note.extras.Utils.showText
+import com.neupanesushant.note.dpToPx
 import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
 
@@ -31,7 +32,7 @@ class TodoHomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentTodoHomeBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -45,6 +46,10 @@ class TodoHomeFragment : Fragment() {
     }
 
     private fun setupView() {
+
+        binding.GroupsTitle.animation = AnimationUtils.loadAnimation(
+            requireContext(), androidx.appcompat.R.anim.abc_slide_in_top
+        )
 
         binding.rvAllGroupLists.animation = AnimationUtils.loadAnimation(
             context,
@@ -68,15 +73,33 @@ class TodoHomeFragment : Fragment() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun setupObserver() {
-        viewModel.allGroup.observe(viewLifecycleOwner) {
+        setupAllGroupList()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setupAllGroupList() {
+        viewModel.allGroup.observe(viewLifecycleOwner) { it ->
 
             if (binding.rvAllGroupLists.adapter == null) {
                 allGroupsAdapter = GenericRecyclerAdapter(
                     it,
                     ItemTodoGroupBinding::class.java
-                ) { binding: ItemTodoGroupBinding, item: TaskGroup, _: List<TaskGroup> ->
+                ) { binding: ItemTodoGroupBinding, item: TaskGroup, _: List<TaskGroup>, position: Int ->
+
+                    binding.root.layoutParams.width =
+                        ((Resources.getSystem().displayMetrics.widthPixels / 2) - dpToPx(
+                            requireContext(),
+                            20f
+                        )).toInt()
+
+                    if (position % 2 == 0) {
+                        binding.root.animation =
+                            AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+                    } else {
+                        binding.root.animation =
+                            AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+                    }
 
                     val completed = item.tasks.filter { it.isCompleted }.size
 
@@ -95,7 +118,9 @@ class TodoHomeFragment : Fragment() {
                     }
 
                     binding.root.setOnClickListener {
-                        requireContext().showText("Id is ${item.id}")
+                        val bundle = Bundle()
+                        bundle.putInt("groupId", item.id)
+                        replaceFragment(TodoTaskFragment.getInstance(), bundle)
                     }
                 }
                 binding.rvAllGroupLists.adapter = allGroupsAdapter
@@ -104,6 +129,14 @@ class TodoHomeFragment : Fragment() {
             }
 
         }
+    }
+
+    private fun replaceFragment(fragment: Fragment, bundle: Bundle) {
+        val fragmentTransaction = this@TodoHomeFragment.parentFragmentManager.beginTransaction()
+        fragment.arguments = bundle
+        fragmentTransaction.replace(R.id.fragment_container, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)

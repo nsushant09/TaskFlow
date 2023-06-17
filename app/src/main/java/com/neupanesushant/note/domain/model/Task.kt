@@ -15,6 +15,7 @@ data class Task(
     val id: Int,
     val title: String,
     val description: String,
-    val isCompleted : Boolean,
-    val date : String
+    val isCompleted: Boolean,
+    val date: String,
+    val groupId: Int
 ) : Parcelable

@@ -41,7 +41,7 @@ class GenericRecyclerAdapter<T : Any, VM : ViewBinding>(
 
     override fun onBindViewHolder(holder: BindingHolder, position: Int) {
         val item = list[holder.adapterPosition]
-        bindingInterface.bindData(holder.binding, item, list)
+        bindingInterface.bindData(holder.binding, item, list, position)
     }
 
     override fun getItemCount(): Int {
@@ -52,13 +52,14 @@ class GenericRecyclerAdapter<T : Any, VM : ViewBinding>(
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun refreshData(refreshedListItems: List<T>) {
         val diffCallback = DifferCallback(list, refreshedListItems)
-        val diffCourses = DiffUtil.calculateDiff(diffCallback)
-        list.toMutableList().clear()
-        list.toMutableList().addAll(refreshedListItems)
-        diffCourses.dispatchUpdatesTo(this)
+        val diffList = DiffUtil.calculateDiff(diffCallback)
+
+        (list as MutableList<T>).clear()
+        (list as MutableList<T>).addAll(refreshedListItems)
+
+        diffList.dispatchUpdatesTo(this)
     }
 
     inner class BindingHolder(val binding: VM) : RecyclerView.ViewHolder(binding.root)
