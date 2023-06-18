@@ -3,9 +3,12 @@ package com.neupanesushant.note.fragments.todo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.extras.Constants
 import com.neupanesushant.note.domain.model.TaskGroup
+import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
 import com.neupanesushant.note.domain.repo.TaskDAO
 import com.neupanesushant.note.domain.repo.TaskGroupDAO
 import kotlinx.coroutines.*
@@ -21,8 +24,10 @@ class TodoHomeViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
     private val _isSearchFieldVisible: MutableLiveData<Boolean> = MutableLiveData()
     val isSearchFieldVisible: LiveData<Boolean> get() = _isSearchFieldVisible
 
-    private val _allGroup: MutableLiveData<List<TaskGroup>> = MutableLiveData()
-    val allGroup: LiveData<List<TaskGroup>> get() = _allGroup
+    private val _allGroup: MutableLiveData<List<TaskGroupWithAllTasks>> = MutableLiveData()
+    val allGroup: LiveData<List<TaskGroupWithAllTasks>> get() = _allGroup
+
+    private val _cacheTaskGroup: MutableLiveData<List<TaskGroup>> = MutableLiveData()
 
     init {
         _isSearchFieldVisible.value = false
@@ -35,7 +40,13 @@ class TodoHomeViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
 
     fun addNewGroup(groupName: String) {
         uiScope.launch {
-            taskGroupDAO.insert(TaskGroup(0, groupName, emptyList()))
+            taskGroupDAO.insert(TaskGroup(0, groupName))
+        }
+    }
+
+    fun refreshData() {
+        _cacheTaskGroup.value?.let {
+            getAllTaskFromGroups(it)
         }
     }
 
@@ -44,8 +55,23 @@ class TodoHomeViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
             taskGroupDAO.getAllTaskGroup()
                 .flowOn(Dispatchers.IO)
                 .collectLatest {
-                    _allGroup.postValue(it)
+                    it?.let {
+                        _cacheTaskGroup.postValue(it)
+                        getAllTaskFromGroups(it)
+                    }
                 }
+        }
+    }
+
+    private fun getAllTaskFromGroups(list: List<TaskGroup>) {
+        viewModelScope.launch {
+            val temp = ArrayList<TaskGroupWithAllTasks>()
+            list.forEach {
+                val tasks =
+                    taskDao.getTasksFromGroupId(SimpleSQLiteQuery("SELECT * FROM ${Constants.TASK_TABLE} WHERE groupId = ${it.id}"))
+                temp.add(TaskGroupWithAllTasks(it.id, it.name, tasks))
+            }
+            _allGroup.postValue(temp)
         }
     }
 

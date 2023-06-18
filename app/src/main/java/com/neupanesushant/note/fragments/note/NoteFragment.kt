@@ -1,5 +1,6 @@
 package com.neupanesushant.note.fragments.note
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -18,6 +19,7 @@ import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentNoteBinding
 import com.neupanesushant.note.databinding.ItemAllNoteBinding
 import com.neupanesushant.note.domain.model.NoteDetails
+import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
 
@@ -55,16 +57,24 @@ class NoteFragment : Fragment() {
         setupObserver()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupView() {
         binding.rvAllNotes.animation = AnimationUtils.loadAnimation(
             context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom
         )
         binding.rvAllNotes.layoutManager = LinearLayoutManager(context)
+
         binding.NotesTitle.animation = AnimationUtils.loadAnimation(
             requireContext(), androidx.appcompat.R.anim.abc_slide_in_top
         )
+        binding.layoutEmptyMessage.tvEmptyMessage.animation =
+            AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+
         binding.btnAddNote.animation =
             AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
+
+        binding.layoutEmptyMessage.tvEmptyMessage.text =
+            "There are no notes.\nClick on the Add Button below to add new notes"
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -81,6 +91,16 @@ class NoteFragment : Fragment() {
 
     private fun setupObserver() {
         viewModel.notesToDisplay.observe(viewLifecycleOwner) {
+
+            if (it != null && it.isEmpty()) {
+                binding.rvAllNotes.visibility = View.GONE
+                binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.VISIBLE
+                return@observe
+            } else {
+                binding.rvAllNotes.visibility = View.VISIBLE
+                binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.GONE
+            }
+
             it?.let {
                 if (binding.rvAllNotes.adapter == null) {
                     adapter = GenericRecyclerAdapter(
@@ -128,13 +148,13 @@ class NoteFragment : Fragment() {
                 binding.etSearch.animation =
                     AnimationUtils.loadAnimation(requireContext(), R.anim.slide_out_right)
                 binding.etSearch.visibility = View.GONE
-                setupInputStop(binding.etSearch)
+                Utils.showKeyboard(activity, binding.etSearch)
                 viewModel.setSearchFieldVisibility(false)
             } else {
                 binding.etSearch.visibility = View.VISIBLE
                 binding.etSearch.animation =
                     AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_right)
-                setupInputStart(binding.etSearch)
+                Utils.hideKeyboard(activity, binding.etSearch)
                 viewModel.setSearchFieldVisibility(true)
             }
         }
@@ -149,21 +169,5 @@ class NoteFragment : Fragment() {
                 viewModel.searchNoteWithString(it.toString())
             }
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun setupInputStart(editText: EditText) {
-        editText.requestFocus()
-        val imm: InputMethodManager =
-            activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(editText, 0)
-        editText.textCursorDrawable = null
-    }
-
-    private fun setupInputStop(editText: EditText) {
-        editText.clearFocus()
-        val imm: InputMethodManager =
-            activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(editText.windowToken, 0)
     }
 }

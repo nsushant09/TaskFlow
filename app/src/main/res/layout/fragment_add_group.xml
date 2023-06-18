@@ -31,7 +31,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:hint="@string/group_name"
         app:boxStrokeColor="@color/primarypurple"
-        app:hintTextColor="@color/black"
+        app:hintTextColor="@color/primarypurple"
 
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusTopEnd="16dp"

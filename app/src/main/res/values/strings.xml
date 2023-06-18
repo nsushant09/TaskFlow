@@ -20,4 +20,11 @@
     <string name="group_name">Group Name</string>
     <string name="groups">Groups</string>
     <string name="create_group">Create Group</string>
+    <string name="new_task">New Task</string>
+    <string name="task_details_optional">Task Details (Optional)</string>
+    <string name="save">Save</string>
+    <string name="set_date">Set Date</string>
+    <string name="dd_mm_yy_optional">DD/MM/YY (Optional)</string>
+    <string name="date_optional">Date (Optional)</string>
+    <string name="toggle_completed">Toggle Completed</string>
 </resources>

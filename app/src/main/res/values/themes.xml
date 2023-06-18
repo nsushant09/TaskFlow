@@ -13,6 +13,28 @@
         <item name="android:statusBarColor">?attr/colorOnPrimary</item>
         <!-- Customize your theme here. -->
         <item name="popupMenuStyle">@style/popupMenuStyle</item>
+        <item name="materialCalendarTheme">@style/CustomMaterialCalendar</item>
 
+    </style>
+
+    <style name="BottomSheetDialogThemeNoFloating" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize|stateVisible</item>
+    </style>
+
+    <style name="CustomMaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorPrimary">@color/primarypurple</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.App.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.App.MediumComponent
+        </item>
+    </style>
+
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerSize">16dp</item>
     </style>
 </resources>

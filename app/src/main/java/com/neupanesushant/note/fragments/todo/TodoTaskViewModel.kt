@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import com.neupanesushant.note.domain.model.NoteDetails
 import com.neupanesushant.note.domain.model.Task
+import com.neupanesushant.note.domain.model.TaskGroup
 import com.neupanesushant.note.domain.repo.TaskDAO
 import com.neupanesushant.note.domain.repo.TaskGroupDAO
 import com.neupanesushant.note.extras.Constants
@@ -26,11 +28,18 @@ class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
     private var _tasksToDisplay = MutableLiveData<List<Task>>()
     val tasksToDisplay: LiveData<List<Task>> get() = _tasksToDisplay
 
+    private val _isSearchFieldVisible = MutableLiveData<Boolean>()
+    val isSearchFieldVisible: LiveData<Boolean> get() = _isSearchFieldVisible
+
+    init {
+        _isSearchFieldVisible.value = false
+    }
+
     fun setGroupId(id: Int) {
         groupId = id
     }
 
-    fun observeAllTasks() {
+    fun fetchAllTasks() {
         viewModelScope.launch {
             taskDao.getTaskFromGroupID(SimpleSQLiteQuery("SELECT * FROM ${Constants.TASK_TABLE} WHERE groupId = $groupId"))
                 .flowOn(Dispatchers.IO)
@@ -45,7 +54,17 @@ class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
         _tasksToDisplay.value = cacheAllTasks.value
     }
 
-    fun addTask(title: String, description: String) {
+    fun searchTaskWithString(string: String) {
+        val temp = ArrayList<Task>()
+        cacheAllTasks.value?.forEach {
+            if (Utils.isTargetInString(it.title, string)) {
+                temp.add(it)
+            }
+        }
+        _tasksToDisplay.value = temp
+    }
+
+    fun addTask(title: String, description: String, date: String) {
         viewModelScope.launch {
             taskDao.insert(
                 Task(
@@ -53,7 +72,7 @@ class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
                     title,
                     description,
                     false,
-                    Utils.getCurrentDate().toString(),
+                    date,
                     groupId
                 )
             )
@@ -70,5 +89,9 @@ class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
         viewModelScope.launch {
             taskDao.update(task)
         }
+    }
+
+    fun setSearchFieldVisibility(boolean: Boolean) {
+        _isSearchFieldVisible.value = boolean
     }
 }

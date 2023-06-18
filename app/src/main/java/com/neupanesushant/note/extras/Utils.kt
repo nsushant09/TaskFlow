@@ -35,4 +35,29 @@ object Utils {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
+    fun isTargetInString(string: String, target: String): Boolean {
+        val lengthOfTarget = target.length
+        val list = string.split(" ")
+        for (i in list) {
+            try {
+                if (i.substring(0, lengthOfTarget).equals(target, true)) {
+                    return true
+                }
+            } catch (e: StringIndexOutOfBoundsException) {
+                continue
+            }
+
+        }
+
+        for (i in string.indices) {
+            try {
+                if (string.substring(i, i + lengthOfTarget).equals(target, true)) {
+                    return true
+                }
+            } catch (_: Exception) {
+            }
+        }
+        return false
+    }
+
 }

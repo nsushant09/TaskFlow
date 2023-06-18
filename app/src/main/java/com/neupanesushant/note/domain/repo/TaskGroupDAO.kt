@@ -22,4 +22,7 @@ interface TaskGroupDAO {
 
     @Query("SELECT * FROM " + Constants.TASKGROUP_TABLE)
     fun getAllTaskGroup(): Flow<List<TaskGroup>?>
+
+    @RawQuery(observedEntities = [TaskGroup::class])
+    fun getTaskGroupFromId(query: SupportSQLiteQuery): Flow<TaskGroup>
 }

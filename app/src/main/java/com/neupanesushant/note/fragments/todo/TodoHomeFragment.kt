@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.neupanesushant.note.R
@@ -17,6 +18,7 @@ import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.databinding.FragmentTodoHomeBinding
 import com.neupanesushant.note.databinding.ItemTodoGroupBinding
 import com.neupanesushant.note.domain.model.TaskGroup
+import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
 import com.neupanesushant.note.dpToPx
 import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
@@ -27,7 +29,7 @@ class TodoHomeFragment : Fragment() {
     private val binding get() = _binding
     private val viewModel: TodoHomeViewModel by inject()
 
-    private lateinit var allGroupsAdapter: GenericRecyclerAdapter<TaskGroup, ItemTodoGroupBinding>
+    private lateinit var allGroupsAdapter: GenericRecyclerAdapter<TaskGroupWithAllTasks, ItemTodoGroupBinding>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +47,7 @@ class TodoHomeFragment : Fragment() {
         setupObserver()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupView() {
 
         binding.GroupsTitle.animation = AnimationUtils.loadAnimation(
@@ -59,8 +62,14 @@ class TodoHomeFragment : Fragment() {
         binding.rvAllGroupLists.layoutManager =
             GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
 
+        binding.layoutEmptyMessage.tvEmptyMessage.animation =
+            AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+
         binding.btnAddGroup.animation =
             AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
+
+        binding.layoutEmptyMessage.tvEmptyMessage.text =
+            "There are no task groups.\nClick on the Add Button below to add new groups"
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -70,6 +79,12 @@ class TodoHomeFragment : Fragment() {
         binding.btnAddGroup.setOnClickListener {
             val addGroupFragment = AddGroupFragment.getInstance()
             addGroupFragment.show(parentFragmentManager, addGroupFragment::class.java.name)
+        }
+
+        binding.etSearch.addTextChangedListener {
+            if (it == null || it.isEmpty()) {
+            } else {
+            }
         }
     }
 
@@ -81,11 +96,20 @@ class TodoHomeFragment : Fragment() {
     private fun setupAllGroupList() {
         viewModel.allGroup.observe(viewLifecycleOwner) { it ->
 
+            if (it.isEmpty()) {
+                binding.rvAllGroupLists.visibility = View.GONE
+                binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.VISIBLE
+                return@observe
+            } else {
+                binding.rvAllGroupLists.visibility = View.VISIBLE
+                binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.GONE
+            }
+
             if (binding.rvAllGroupLists.adapter == null) {
                 allGroupsAdapter = GenericRecyclerAdapter(
                     it,
                     ItemTodoGroupBinding::class.java
-                ) { binding: ItemTodoGroupBinding, item: TaskGroup, _: List<TaskGroup>, position: Int ->
+                ) { binding: ItemTodoGroupBinding, item: TaskGroupWithAllTasks, _: List<TaskGroupWithAllTasks>, position: Int ->
 
                     binding.root.layoutParams.width =
                         ((Resources.getSystem().displayMetrics.widthPixels / 2) - dpToPx(
@@ -105,20 +129,19 @@ class TodoHomeFragment : Fragment() {
 
                     binding.apply {
                         tvGroupName.text = item.name
-                        tvTotalTaskValue.text = "${item.tasks.size} tasks"
-                        tvCompletedTaskValue.text = "$completed completed"
-                        try {
-                            lpiTaskProgress.setProgress(
-                                (completed / item.tasks.size) * 100,
-                                false
-                            )
-                        } catch (e: java.lang.Exception) {
+                        tvTotalTaskValue.text = "${item.tasks.size} tasks "
+                        tvCompletedTaskValue.text = " $completed completed"
+                        if (completed < 1)
                             lpiTaskProgress.setProgress(0, false)
+                        else {
+                            val percentage = (completed.toFloat() / item.tasks.size) * 100
+                            lpiTaskProgress.setProgress(percentage.toInt(), false)
                         }
                     }
 
                     binding.root.setOnClickListener {
                         val bundle = Bundle()
+                        bundle.putString("groupName", item.name)
                         bundle.putInt("groupId", item.id)
                         replaceFragment(TodoTaskFragment.getInstance(), bundle)
                     }
@@ -158,5 +181,10 @@ class TodoHomeFragment : Fragment() {
             }
         }
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.refreshData()
     }
 }

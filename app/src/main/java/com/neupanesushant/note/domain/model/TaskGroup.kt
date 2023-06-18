@@ -12,5 +12,4 @@ data class TaskGroup(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,
-    val tasks : List<Task>
 ) : Parcelable

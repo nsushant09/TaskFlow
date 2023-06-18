@@ -24,4 +24,8 @@ interface TaskDAO {
 
     @RawQuery(observedEntities = [Task::class])
     fun getTaskFromGroupID(query: SupportSQLiteQuery): Flow<List<Task>>
+
+    @RawQuery
+    suspend fun getTasksFromGroupId(query: SupportSQLiteQuery): List<Task>
+
 }

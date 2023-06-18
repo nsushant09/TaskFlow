@@ -63,8 +63,7 @@
         android:layout_marginTop="32dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/GroupsTitle"
-        />
+        app:layout_constraintTop_toBottomOf="@id/GroupsTitle" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
