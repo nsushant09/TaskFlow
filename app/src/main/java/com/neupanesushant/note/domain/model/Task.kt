@@ -13,9 +13,9 @@ import com.neupanesushant.note.extras.Constants
 data class Task(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val title: String,
-    val description: String,
-    val isCompleted: Boolean,
-    val date: String,
+    var title: String,
+    var description: String,
+    var isCompleted: Boolean,
+    var date: String,
     val groupId: Int
 ) : Parcelable

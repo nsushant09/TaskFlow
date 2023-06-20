@@ -12,6 +12,7 @@ import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentAddTaskBinding
+import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.extras.Utils.showText
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
@@ -24,6 +25,7 @@ class AddTaskFragment : BottomSheetDialogFragment() {
     private val binding get() = _binding
 
     private var groupId = -1;
+    private var task: Task? = null
     private val viewModel: TodoTaskViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +52,7 @@ class AddTaskFragment : BottomSheetDialogFragment() {
             activity?.onBackPressed()
 
         groupId = arguments!!.getInt("groupId")
+        task = arguments!!.getParcelable("task")
         viewModel.setGroupId(groupId)
 
         setupView()
@@ -57,10 +60,25 @@ class AddTaskFragment : BottomSheetDialogFragment() {
         setupObserver()
     }
 
-    private fun setupView() {}
+    private fun setupView() {
+        task?.let { task ->
+            binding.etTaskName.setText(task.title)
+            binding.etTaskDetails.setText(task.description)
+            binding.etDate.setText(task.date)
+            binding.btnDeleteTask.visibility = View.VISIBLE
+        }
+    }
+
     private fun setupEventListener() {
         binding.etDate.setOnClickListener {
             showCalenderPicker()
+        }
+
+        binding.btnDeleteTask.setOnClickListener {
+            task?.let {
+                viewModel.deleteTask(it)
+            }
+            this.dismissAllowingStateLoss()
         }
 
         binding.btnSaveTask.setOnClickListener {
@@ -68,13 +86,23 @@ class AddTaskFragment : BottomSheetDialogFragment() {
             if (binding.etTaskName.text == null || binding.etTaskName.text!!.isEmpty()) {
                 binding.etTaskName.error = "Enter task name"
             } else {
-                viewModel.addTask(
-                    binding.etTaskName.text.toString(),
-                    binding.etTaskDetails.text.toString(),
-                    binding.etDate.text.toString()
-                )
+                if (task == null) {
+                    viewModel.addTask(
+                        binding.etTaskName.text.toString(),
+                        binding.etTaskDetails.text.toString(),
+                        binding.etDate.text.toString()
+                    )
 
-                requireContext().showText("Task added")
+                    requireContext().showText("Task added")
+                } else {
+                    task?.let {
+                        it.title = binding.etTaskName.text.toString()
+                        it.description = binding.etTaskDetails.text.toString()
+                        it.date = binding.etDate.text.toString()
+                        viewModel.updateTask(it)
+                        requireContext().showText("Task updated")
+                    }
+                }
                 this.dismissAllowingStateLoss()
             }
 

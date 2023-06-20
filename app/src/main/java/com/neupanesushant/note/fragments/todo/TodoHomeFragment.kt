@@ -10,13 +10,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.neupanesushant.note.R
 import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.databinding.FragmentTodoHomeBinding
+import com.neupanesushant.note.databinding.ItemAllTaskBinding
 import com.neupanesushant.note.databinding.ItemTodoGroupBinding
+import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.domain.model.TaskGroup
 import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
 import com.neupanesushant.note.dpToPx
@@ -28,8 +32,10 @@ class TodoHomeFragment : Fragment() {
     private lateinit var _binding: FragmentTodoHomeBinding
     private val binding get() = _binding
     private val viewModel: TodoHomeViewModel by inject()
+    private val todoTaskViewModel: TodoTaskViewModel by inject()
 
     private lateinit var allGroupsAdapter: GenericRecyclerAdapter<TaskGroupWithAllTasks, ItemTodoGroupBinding>
+    private lateinit var todayTasksAdapter: GenericRecyclerAdapter<Task, ItemAllTaskBinding>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,14 +68,19 @@ class TodoHomeFragment : Fragment() {
         binding.rvAllGroupLists.layoutManager =
             GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
 
-        binding.layoutEmptyMessage.tvEmptyMessage.animation =
+        binding.rvTodayTask.layoutManager = LinearLayoutManager(requireContext())
+
+        binding.layoutEmptyMessageGroup.tvEmptyMessage.animation =
+            AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+
+        binding.layoutEmptyMessageTodayTask.tvEmptyMessage.animation =
             AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
 
         binding.btnAddGroup.animation =
             AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
 
-        binding.layoutEmptyMessage.tvEmptyMessage.text =
-            "There are no task groups.\nClick on the Add Button below to add new groups"
+        binding.layoutEmptyMessageTodayTask.tvEmptyMessage.text =
+            "Finally Some Rest!!\nThere are no tasks today"
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -90,19 +101,20 @@ class TodoHomeFragment : Fragment() {
 
     private fun setupObserver() {
         setupAllGroupList()
+        setupTodayTasksList()
     }
 
     @SuppressLint("SetTextI18n")
     private fun setupAllGroupList() {
         viewModel.allGroup.observe(viewLifecycleOwner) { it ->
 
-            if (it.isEmpty()) {
+            if (it == null || it.isEmpty()) {
                 binding.rvAllGroupLists.visibility = View.GONE
-                binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.VISIBLE
+                binding.layoutEmptyMessageGroup.tvEmptyMessage.visibility = View.VISIBLE
                 return@observe
             } else {
                 binding.rvAllGroupLists.visibility = View.VISIBLE
-                binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.GONE
+                binding.layoutEmptyMessageGroup.tvEmptyMessage.visibility = View.GONE
             }
 
             if (binding.rvAllGroupLists.adapter == null) {
@@ -152,6 +164,76 @@ class TodoHomeFragment : Fragment() {
             }
 
         }
+    }
+
+    private fun setupTodayTasksList() {
+        viewModel.todayEndingTasks.observe(this) {
+
+            if (it == null || it.isEmpty()) {
+                binding.rvTodayTask.visibility = View.GONE
+                binding.layoutEmptyMessageTodayTask.tvEmptyMessage.visibility = View.VISIBLE
+                return@observe
+            } else {
+                binding.rvTodayTask.visibility = View.VISIBLE
+                binding.layoutEmptyMessageTodayTask.tvEmptyMessage.visibility = View.GONE
+            }
+
+            if (binding.rvTodayTask.adapter == null) {
+                todayTasksAdapter = GenericRecyclerAdapter(
+                    it,
+                    ItemAllTaskBinding::class.java
+                ) { binding: ItemAllTaskBinding, item: Task, _: List<Task>, _: Int ->
+                    binding.tvTaskName.text = item.title
+                    binding.tvTaskDetails.text = item.description
+                    binding.tvDate.text = item.date
+
+                    if (item.isCompleted)
+                        binding.btnToggleCompleted.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.ic_tick_filled
+                            )
+                        )
+                    else
+                        binding.btnToggleCompleted.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.ic_bullseye
+                            )
+                        )
+
+                    if (item.description.isEmpty())
+                        binding.tvTaskDetails.visibility = View.GONE
+
+                    if (item.date.isEmpty())
+                        binding.tvDate.visibility = View.GONE
+
+                    binding.btnToggleCompleted.setOnClickListener {
+                        item.isCompleted = !item.isCompleted
+                        todoTaskViewModel.updateTask(item) {
+                            viewModel.refreshGroupItem(item.groupId, item.id)
+                        }
+                    }
+
+                    binding.root.setOnClickListener {
+                        val bundle = Bundle()
+                        bundle.putParcelable("task", item)
+                        bundle.putInt("groupId", item.groupId)
+                        routeToAddUpdateFragment(bundle)
+                    }
+                }
+                binding.rvTodayTask.adapter = todayTasksAdapter
+            } else {
+                todayTasksAdapter.refreshData(it)
+            }
+
+        }
+    }
+
+    private fun routeToAddUpdateFragment(bundle: Bundle) {
+        val addTaskFragment = AddTaskFragment.getInstance()
+        addTaskFragment.arguments = bundle
+        addTaskFragment.show(parentFragmentManager, addTaskFragment::class.java.name)
     }
 
     private fun replaceFragment(fragment: Fragment, bundle: Bundle) {

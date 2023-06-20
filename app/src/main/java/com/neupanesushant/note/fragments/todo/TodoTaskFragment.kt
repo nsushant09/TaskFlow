@@ -87,10 +87,7 @@ class TodoTaskFragment() : Fragment() {
         binding.btnAddTask.setOnClickListener {
             val bundle = Bundle()
             bundle.putInt("groupId", groupId)
-
-            val addTaskFragment = AddTaskFragment.getInstance()
-            addTaskFragment.arguments = bundle
-            addTaskFragment.show(parentFragmentManager, addTaskFragment::class.java.name)
+            routeToAddUpdateFragment(bundle)
         }
 
         binding.etSearch.addTextChangedListener {
@@ -106,14 +103,16 @@ class TodoTaskFragment() : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun setupObserver() {
+
         viewModel.tasksToDisplay.observe(this) {
 
             it?.let {
                 binding.tvTotalTaskValue.text = "${it.size} tasks "
-                binding.tvCompletedTaskValue.text = " ${it.filter { it.isCompleted }.size} completed"
+                binding.tvCompletedTaskValue.text =
+                    " ${it.filter { it.isCompleted }.size} completed"
             }
 
-            if (it.isEmpty()) {
+            if (it == null || it.isEmpty()) {
                 binding.rvAllTasks.visibility = View.GONE
                 binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.VISIBLE
                 return@observe
@@ -127,24 +126,43 @@ class TodoTaskFragment() : Fragment() {
                     it,
                     ItemAllTaskBinding::class.java
                 ) { binding: ItemAllTaskBinding, item: Task, _: List<Task>, position: Int ->
+
                     binding.tvTaskName.text = item.title
                     binding.tvTaskDetails.text = item.description
                     binding.tvDate.text = item.date
 
-                    if(item.isCompleted)
-                        binding.btnToggleCompleted.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_tick_filled))
+                    if (item.isCompleted)
+                        binding.btnToggleCompleted.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.ic_tick_filled
+                            )
+                        )
                     else
-                        binding.btnToggleCompleted.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_bullseye))
-
-                    binding.btnToggleCompleted.setOnClickListener {
-                        viewModel.updateTask(item.copy(isCompleted = !item.isCompleted))
-                    }
+                        binding.btnToggleCompleted.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.ic_bullseye
+                            )
+                        )
 
                     if (item.description.isEmpty())
                         binding.tvTaskDetails.visibility = View.GONE
 
                     if (item.date.isEmpty())
                         binding.tvDate.visibility = View.GONE
+
+                    binding.btnToggleCompleted.setOnClickListener {
+                        item.isCompleted = !item.isCompleted
+                        viewModel.updateTask(item)
+                    }
+
+                    binding.root.setOnClickListener {
+                        val bundle = Bundle()
+                        bundle.putParcelable("task", item)
+                        bundle.putInt("groupId", groupId)
+                        routeToAddUpdateFragment(bundle)
+                    }
                 }
                 binding.rvAllTasks.adapter = allTasksAdapter
             } else {
@@ -172,6 +190,12 @@ class TodoTaskFragment() : Fragment() {
                 viewModel.setSearchFieldVisibility(true)
             }
         }
+    }
+
+    private fun routeToAddUpdateFragment(bundle: Bundle) {
+        val addTaskFragment = AddTaskFragment.getInstance()
+        addTaskFragment.arguments = bundle
+        addTaskFragment.show(parentFragmentManager, addTaskFragment::class.java.name)
     }
 
     companion object {

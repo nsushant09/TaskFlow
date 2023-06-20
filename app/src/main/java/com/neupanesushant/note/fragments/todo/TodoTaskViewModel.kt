@@ -13,13 +13,15 @@ import com.neupanesushant.note.domain.repo.TaskDAO
 import com.neupanesushant.note.domain.repo.TaskGroupDAO
 import com.neupanesushant.note.extras.Constants
 import com.neupanesushant.note.extras.Utils
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
 
 class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: TaskGroupDAO) :
     ViewModel() {
+
+    private val job = Job()
+    private val scope = CoroutineScope(job + Dispatchers.IO)
 
     private var groupId = -1;
 
@@ -40,7 +42,7 @@ class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
     }
 
     fun fetchAllTasks() {
-        viewModelScope.launch {
+        scope.launch {
             taskDao.getTaskFromGroupID(SimpleSQLiteQuery("SELECT * FROM ${Constants.TASK_TABLE} WHERE groupId = $groupId"))
                 .flowOn(Dispatchers.IO)
                 .collectLatest {
@@ -55,17 +57,19 @@ class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
     }
 
     fun searchTaskWithString(string: String) {
-        val temp = ArrayList<Task>()
-        cacheAllTasks.value?.forEach {
-            if (Utils.isTargetInString(it.title, string)) {
-                temp.add(it)
+        scope.launch {
+            val temp = ArrayList<Task>()
+            cacheAllTasks.value?.forEach {
+                if (Utils.isTargetInString(it.title, string)) {
+                    temp.add(it)
+                }
             }
+            _tasksToDisplay.postValue(temp)
         }
-        _tasksToDisplay.value = temp
     }
 
     fun addTask(title: String, description: String, date: String) {
-        viewModelScope.launch {
+        scope.launch {
             taskDao.insert(
                 Task(
                     0,
@@ -80,18 +84,30 @@ class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
     }
 
     fun deleteTask(task: Task) {
-        viewModelScope.launch {
+        scope.launch {
             taskDao.delete(task)
         }
     }
 
-    fun updateTask(task: Task) {
-        viewModelScope.launch {
+    fun updateTask(task: Task){
+        scope.launch {
             taskDao.update(task)
+        }
+    }
+
+    fun updateTask(task : Task, onCompleteListener : () -> Unit){
+        scope.launch {
+            taskDao.update(task)
+            onCompleteListener()
         }
     }
 
     fun setSearchFieldVisibility(boolean: Boolean) {
         _isSearchFieldVisible.value = boolean
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        scope.cancel()
     }
 }

@@ -11,6 +11,7 @@ import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentQuoteBinding
 import com.neupanesushant.note.databinding.ItemAllQuoteBinding
 import com.neupanesushant.note.domain.model.Quote
+import com.neupanesushant.note.domain.model.UIState
 import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
 
@@ -48,8 +49,8 @@ class QuoteFragment : Fragment() {
 
         setupListOfQuotes()
 
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            if (it) {
+        viewModel.uiState.observe(viewLifecycleOwner) {
+            if (it == UIState.LOADING) {
                 binding.progressBar.visibility = View.VISIBLE
                 binding.rvAllQuotes.visibility = View.GONE
             } else {
@@ -60,7 +61,13 @@ class QuoteFragment : Fragment() {
     }
 
     private fun setupListOfQuotes() {
-        viewModel.listofQuotes.observe(viewLifecycleOwner) {
+        viewModel.listOfQuotes.observe(viewLifecycleOwner) {
+
+            if(it.isEmpty()){
+                viewModel.getContentData()
+                return@observe
+            }
+
             val adapter = GenericRecyclerAdapter(
                 it,
                 ItemAllQuoteBinding::class.java

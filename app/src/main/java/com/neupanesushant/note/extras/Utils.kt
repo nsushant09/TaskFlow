@@ -1,5 +1,6 @@
 package com.neupanesushant.note.extras
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Build
@@ -9,12 +10,12 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 
 object Utils {
     fun getCurrentDate(): Date = Calendar.getInstance().time
-
 
     @RequiresApi(Build.VERSION_CODES.Q)
     fun showKeyboard(activity: Activity?, view: View) {

@@ -92,7 +92,7 @@ class NoteFragment : Fragment() {
     private fun setupObserver() {
         viewModel.notesToDisplay.observe(viewLifecycleOwner) {
 
-            if (it != null && it.isEmpty()) {
+            if (it == null || it.isEmpty()) {
                 binding.rvAllNotes.visibility = View.GONE
                 binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.VISIBLE
                 return@observe
@@ -101,7 +101,7 @@ class NoteFragment : Fragment() {
                 binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.GONE
             }
 
-            it?.let {
+            it.let {
                 if (binding.rvAllNotes.adapter == null) {
                     adapter = GenericRecyclerAdapter(
                         it, ItemAllNoteBinding::class.java
@@ -166,7 +166,8 @@ class NoteFragment : Fragment() {
             if (it == null || it.isEmpty()) {
                 viewModel.refreshNotesToDisplay()
             } else {
-                viewModel.searchNoteWithString(it.toString())
+//                viewModel.searchNoteWithString(it.toString())
+
             }
         }
     }
