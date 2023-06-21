@@ -13,20 +13,6 @@ class GenericRecyclerAdapter<T : Any, VM : ViewBinding>(
     private val bindingClass: Class<VM>,
     private val bindingInterface: RecyclerCallback<VM, T>
 ) : RecyclerView.Adapter<GenericRecyclerAdapter<T, VM>.BindingHolder>() {
-
-    inner class DifferCallback(private val oldList: List<T>, private val newList: List<T>) :
-        DiffUtil.Callback() {
-        override fun getOldListSize() = oldList.size
-        override fun getNewListSize() = newList.size
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-            oldList[oldItemPosition] === newList[newItemPosition]
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-            oldList[oldItemPosition] == newList[newItemPosition]
-
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = bindingClass.getMethod(
@@ -52,14 +38,11 @@ class GenericRecyclerAdapter<T : Any, VM : ViewBinding>(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun refreshData(refreshedListItems: List<T>) {
-        val diffCallback = DifferCallback(list, refreshedListItems)
-        val diffList = DiffUtil.calculateDiff(diffCallback)
-
         (list as MutableList<T>).clear()
         (list as MutableList<T>).addAll(refreshedListItems)
-
-        diffList.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
     inner class BindingHolder(val binding: VM) : RecyclerView.ViewHolder(binding.root)
 
