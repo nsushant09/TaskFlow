@@ -106,7 +106,7 @@ class NoteFragment : Fragment() {
 
             if (binding.rvAllNotes.adapter == null) {
                 adapter = GenericRecyclerAdapter(
-                    it, ItemAllNoteBinding::class.java
+                    it.toMutableList(), ItemAllNoteBinding::class.java
                 ) { binding: ItemAllNoteBinding, item: NoteDetails, _: List<NoteDetails>, position: Int ->
                     when (position % 5) {
                         1 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightblue)

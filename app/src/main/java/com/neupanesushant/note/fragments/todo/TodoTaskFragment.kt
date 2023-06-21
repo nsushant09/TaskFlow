@@ -124,51 +124,53 @@ class TodoTaskFragment() : Fragment() {
                 binding.layoutEmptyMessage.layout.visibility = View.GONE
             }
 
-            allTasksAdapter = GenericRecyclerAdapter(
-                it,
-                ItemAllTaskBinding::class.java
-            ) { binding: ItemAllTaskBinding, item: Task, _: List<Task>, position: Int ->
+            if (binding.rvAllTasks.adapter == null) {
+                allTasksAdapter = GenericRecyclerAdapter(
+                    it,
+                    ItemAllTaskBinding::class.java
+                ) { binding: ItemAllTaskBinding, item: Task, _: List<Task>, position: Int ->
 
-                if (item.description.isEmpty())
-                    binding.tvTaskDetails.visibility = View.GONE
+                    if (item.description.isEmpty())
+                        binding.tvTaskDetails.visibility = View.GONE
 
-                if (item.date.isEmpty())
-                    binding.tvDate.visibility = View.GONE
+                    if (item.date.isEmpty())
+                        binding.tvDate.visibility = View.GONE
 
-                binding.tvTaskName.text = item.title
-                binding.tvTaskDetails.text = item.description
-                binding.tvDate.text = item.date
+                    binding.tvTaskName.text = item.title
+                    binding.tvTaskDetails.text = item.description
+                    binding.tvDate.text = item.date
 
-                if (item.isCompleted)
-                    binding.btnToggleCompleted.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.ic_tick_filled
+                    if (item.isCompleted)
+                        binding.btnToggleCompleted.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.ic_tick_filled
+                            )
                         )
-                    )
-                else
-                    binding.btnToggleCompleted.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.ic_bullseye
+                    else
+                        binding.btnToggleCompleted.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.ic_bullseye
+                            )
                         )
-                    )
 
-                binding.btnToggleCompleted.setOnClickListener {
-                    item.isCompleted = !item.isCompleted
-                    viewModel.updateTask(item)
-                }
+                    binding.btnToggleCompleted.setOnClickListener {
+                        item.isCompleted = !item.isCompleted
+                        viewModel.updateTask(item)
+                    }
 
-                binding.root.setOnClickListener {
-                    val bundle = Bundle()
-                    bundle.putParcelable("task", item)
-                    bundle.putInt("groupId", groupId)
-                    routeToAddUpdateFragment(bundle)
+                    binding.root.setOnClickListener {
+                        val bundle = Bundle()
+                        bundle.putParcelable("task", item)
+                        bundle.putInt("groupId", groupId)
+                        routeToAddUpdateFragment(bundle)
+                    }
                 }
+                binding.rvAllTasks.adapter = allTasksAdapter
+            } else {
+                allTasksAdapter.refreshData(it)
             }
-            binding.rvAllTasks.adapter = allTasksAdapter
-
-
         }
     }
 
