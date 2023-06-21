@@ -113,10 +113,10 @@ class TodoHomeFragment : Fragment() {
 
             if (it == null || it.isEmpty()) {
                 binding.rvAllGroupLists.visibility = View.GONE
-                binding.layoutEmptyMessageGroup.tvEmptyMessage.visibility = View.VISIBLE
+                binding.layoutEmptyMessageGroup.layout.visibility = View.VISIBLE
             } else {
                 binding.rvAllGroupLists.visibility = View.VISIBLE
-                binding.layoutEmptyMessageGroup.tvEmptyMessage.visibility = View.GONE
+                binding.layoutEmptyMessageGroup.layout.visibility = View.GONE
             }
 
             if (binding.rvAllGroupLists.adapter == null) {
@@ -181,10 +181,10 @@ class TodoHomeFragment : Fragment() {
 
             if (it == null || it.isEmpty()) {
                 binding.rvTodayTask.visibility = View.GONE
-                binding.layoutEmptyMessageTodayTask.tvEmptyMessage.visibility = View.VISIBLE
+                binding.layoutEmptyMessageTodayTask.layout.visibility = View.VISIBLE
             } else {
                 binding.rvTodayTask.visibility = View.VISIBLE
-                binding.layoutEmptyMessageTodayTask.tvEmptyMessage.visibility = View.GONE
+                binding.layoutEmptyMessageTodayTask.layout.visibility = View.GONE
             }
 
             todayTasksAdapter = GenericRecyclerAdapter(

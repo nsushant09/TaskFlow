@@ -117,11 +117,11 @@ class TodoTaskFragment() : Fragment() {
 
             if (it == null || it.isEmpty()) {
                 binding.rvAllTasks.visibility = View.GONE
-                binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.VISIBLE
+                binding.layoutEmptyMessage.layout.visibility = View.VISIBLE
                 return@observe
             } else {
                 binding.rvAllTasks.visibility = View.VISIBLE
-                binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.GONE
+                binding.layoutEmptyMessage.layout.visibility = View.GONE
             }
 
             if (binding.rvAllTasks.adapter == null) {
