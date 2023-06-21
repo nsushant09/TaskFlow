@@ -5,27 +5,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.sqlite.db.SimpleSQLiteQuery
-import androidx.sqlite.db.SupportSQLiteQuery
-import com.neupanesushant.note.domain.model.NoteDetails
 import com.neupanesushant.note.domain.model.Task
-import com.neupanesushant.note.domain.model.TaskGroup
-import com.neupanesushant.note.domain.repo.TaskDAO
-import com.neupanesushant.note.domain.repo.TaskGroupDAO
+import com.neupanesushant.note.domain.dao.TaskDAO
+import com.neupanesushant.note.domain.dao.TaskGroupDAO
+import com.neupanesushant.note.domain.model.NoteDetails
+import com.neupanesushant.note.domain.repo.TaskRepo
 import com.neupanesushant.note.extras.Constants
 import com.neupanesushant.note.extras.Utils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
 
-class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: TaskGroupDAO) :
+class TodoTaskViewModel(private val taskRepo: TaskRepo) :
     ViewModel() {
 
     private val job = Job()
     private val scope = CoroutineScope(job + Dispatchers.IO)
 
     private var groupId = -1;
-
-    private val cacheAllTasks: MutableLiveData<List<Task>> = MutableLiveData()
 
     private var _tasksToDisplay = MutableLiveData<List<Task>>()
     val tasksToDisplay: LiveData<List<Task>> get() = _tasksToDisplay
@@ -42,35 +39,28 @@ class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
     }
 
     fun fetchAllTasks() {
-        scope.launch {
-            taskDao.getTaskFromGroupID(SimpleSQLiteQuery("SELECT * FROM ${Constants.TASK_TABLE} WHERE groupId = $groupId"))
-                .flowOn(Dispatchers.IO)
+        viewModelScope.launch {
+            taskRepo.getTasksFromGroupId(groupId).flowOn(Dispatchers.Default)
                 .collectLatest {
-                    cacheAllTasks.postValue(it)
-                    _tasksToDisplay.postValue(it)
+                    _tasksToDisplay.value = it
+                    taskRepo.setCachedNotes(it)
                 }
         }
     }
 
-    fun refreshTasks() {
-        _tasksToDisplay.value = cacheAllTasks.value
+    fun refreshTasksToDisplay() {
+        _tasksToDisplay.value = taskRepo.getCachedNotes()
     }
 
-    fun searchTaskWithString(string: String) {
-        scope.launch {
-            val temp = ArrayList<Task>()
-            cacheAllTasks.value?.forEach {
-                if (Utils.isTargetInString(it.title, string)) {
-                    temp.add(it)
-                }
-            }
-            _tasksToDisplay.postValue(temp)
+    fun refreshTasksIfDifferent(oldTasks: List<Task>) {
+        if (oldTasks != taskRepo.getCachedNotes()) {
+            refreshTasksToDisplay()
         }
     }
 
     fun addTask(title: String, description: String, date: String) {
         scope.launch {
-            taskDao.insert(
+            taskRepo.insert(
                 Task(
                     0,
                     title,
@@ -85,25 +75,31 @@ class TodoTaskViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
 
     fun deleteTask(task: Task) {
         scope.launch {
-            taskDao.delete(task)
+            taskRepo.delete(task)
         }
     }
 
-    fun updateTask(task: Task){
+    fun updateTask(task: Task) {
         scope.launch {
-            taskDao.update(task)
+            taskRepo.update(task)
         }
     }
 
-    fun updateTask(task : Task, onCompleteListener : () -> Unit){
+    fun updateTask(task: Task, onCompleteListener: () -> Unit) {
         scope.launch {
-            taskDao.update(task)
+            taskRepo.update(task)
             onCompleteListener()
         }
     }
 
     fun setSearchFieldVisibility(boolean: Boolean) {
         _isSearchFieldVisible.value = boolean
+    }
+
+    fun searchTasksWithTarget(target: String) {
+        _tasksToDisplay.value = taskRepo.getCachedNotes().filter {
+            Utils.isTargetInString(it.title, target)
+        }
     }
 
     override fun onCleared() {

@@ -10,19 +10,18 @@ import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.extras.Constants
 import com.neupanesushant.note.domain.model.TaskGroup
 import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
-import com.neupanesushant.note.domain.repo.TaskDAO
-import com.neupanesushant.note.domain.repo.TaskGroupDAO
+import com.neupanesushant.note.domain.dao.TaskDAO
+import com.neupanesushant.note.domain.dao.TaskGroupDAO
+import com.neupanesushant.note.domain.repo.TaskGroupRepo
+import com.neupanesushant.note.domain.repo.TaskRepo
 import com.neupanesushant.note.extras.Utils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
 import java.text.SimpleDateFormat
 
-class TodoHomeViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: TaskGroupDAO) :
+class TodoHomeViewModel(private val taskGroupRepo: TaskGroupRepo, private val taskRepo: TaskRepo) :
     ViewModel() {
-
-    private val job = Job()
-    private val scope = CoroutineScope(job + Dispatchers.IO)
 
     private val _isSearchFieldVisible: MutableLiveData<Boolean> = MutableLiveData()
     val isSearchFieldVisible: LiveData<Boolean> get() = _isSearchFieldVisible
@@ -33,11 +32,8 @@ class TodoHomeViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
     private val _todayEndingTasks: MutableLiveData<List<Task>> = MutableLiveData()
     val todayEndingTasks: LiveData<List<Task>> get() = _todayEndingTasks
 
-    private val _cacheTaskGroup: MutableLiveData<List<TaskGroup>> = MutableLiveData()
-
     init {
         _isSearchFieldVisible.value = false
-        getAllGroup()
         getTodayEndingTasks()
     }
 
@@ -45,77 +41,48 @@ class TodoHomeViewModel(private val taskDao: TaskDAO, private val taskGroupDAO: 
         _isSearchFieldVisible.value = boolean
     }
 
-    fun addNewGroup(groupName: String) {
-        scope.launch {
-            taskGroupDAO.insert(TaskGroup(0, groupName))
+    fun addNewGroup(groupName: String, callback: () -> Unit) {
+        viewModelScope.launch {
+            taskGroupRepo.insert(TaskGroup(0, groupName))
+            callback()
+        }
+    }
+
+    fun updateGroup(taskGroup: TaskGroup, callback: () -> Unit) {
+        viewModelScope.launch {
+            taskGroupRepo.update(taskGroup)
+            callback()
+        }
+    }
+
+    fun deleteGroup(taskGroup: TaskGroup, callback: () -> Unit) {
+        viewModelScope.launch {
+            taskRepo.deleteAllTaskFromGroupId(taskGroup.id)
+            taskGroupRepo.delete(taskGroup)
+            callback()
         }
     }
 
     fun refreshData() {
-        _cacheTaskGroup.value?.let {
-            getAllTaskFromGroups(it)
-        }
+        getAllGroup()
     }
 
     private fun getAllGroup() {
-        scope.launch {
-            taskGroupDAO.getAllTaskGroup()
-                .flowOn(Dispatchers.IO)
-                .collectLatest {
-                    it?.let {
-                        _cacheTaskGroup.postValue(it)
-                        getAllTaskFromGroups(it)
-                    }
-                }
-        }
-    }
-
-    private fun getAllTaskFromGroups(list: List<TaskGroup>) {
-        scope.launch {
-            val temp = ArrayList<TaskGroupWithAllTasks>()
-            list.forEach {
-                val tasks =
-                    taskDao.getTasksFromGroupId(SimpleSQLiteQuery("SELECT * FROM ${Constants.TASK_TABLE} WHERE groupId = ${it.id}"))
-                temp.add(TaskGroupWithAllTasks(it.id, it.name, tasks))
+        viewModelScope.launch {
+            val newValue = taskGroupRepo.getAllGroupWithTask()
+            if (allGroup.value == null || allGroup!!.value != newValue) {
+                _allGroup.value = taskGroupRepo.getAllGroupWithTask()
             }
-            _allGroup.postValue(temp)
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
     private fun getTodayEndingTasks() {
-        scope.launch {
-            val todayDate = SimpleDateFormat("dd/MM/yyyy").format(Utils.getCurrentDate()).toString()
-            val query = "SELECT * FROM ${Constants.TASK_TABLE} WHERE date = '$todayDate'"
-            taskDao.getTodayEndingTasks(SimpleSQLiteQuery(query))
+        viewModelScope.launch {
+            taskRepo.getTodayEndingTasks()
                 .flowOn(Dispatchers.IO)
                 .collectLatest {
-                    _todayEndingTasks.postValue(it)
+                    _todayEndingTasks.value = it
                 }
-        }
-    }
-
-    fun refreshGroupItem(groupId: Int, itemId: Int) {
-        val temp = allGroup.value
-        temp?.forEach {
-            if (it.id == groupId) {
-                it.tasks.forEach { task ->
-                    if (task.id == itemId) {
-                        task.isCompleted = !task.isCompleted
-                        return
-                    }
-                }
-                return
-            }
-        }
-    }
-
-
-    override fun onCleared() {
-        super.onCleared()
-        try {
-            scope.cancel()
-        } catch (_: java.lang.Exception) {
         }
     }
 }

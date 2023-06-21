@@ -48,6 +48,8 @@ class TodoHomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.refreshData()
         setupView()
         setupEventListener()
         setupObserver()
@@ -79,6 +81,9 @@ class TodoHomeFragment : Fragment() {
         binding.btnAddGroup.animation =
             AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
 
+        binding.layoutEmptyMessageGroup.tvEmptyMessage.text =
+            "There are no task groups\nClick on add button to add a new group"
+
         binding.layoutEmptyMessageTodayTask.tvEmptyMessage.text =
             "Finally Some Rest!!\nThere are no tasks today"
     }
@@ -88,8 +93,10 @@ class TodoHomeFragment : Fragment() {
         searchButtonListener()
 
         binding.btnAddGroup.setOnClickListener {
-            val addGroupFragment = AddGroupFragment.getInstance()
-            addGroupFragment.show(parentFragmentManager, addGroupFragment::class.java.name)
+            val crudGroupFragment = CrudGroupFragment.getInstance() {
+                viewModel.refreshData()
+            }
+            crudGroupFragment.show(parentFragmentManager, crudGroupFragment::class.java.name)
         }
 
         binding.etSearch.addTextChangedListener {
@@ -111,7 +118,6 @@ class TodoHomeFragment : Fragment() {
             if (it == null || it.isEmpty()) {
                 binding.rvAllGroupLists.visibility = View.GONE
                 binding.layoutEmptyMessageGroup.tvEmptyMessage.visibility = View.VISIBLE
-                return@observe
             } else {
                 binding.rvAllGroupLists.visibility = View.VISIBLE
                 binding.layoutEmptyMessageGroup.tvEmptyMessage.visibility = View.GONE
@@ -121,21 +127,13 @@ class TodoHomeFragment : Fragment() {
                 allGroupsAdapter = GenericRecyclerAdapter(
                     it,
                     ItemTodoGroupBinding::class.java
-                ) { binding: ItemTodoGroupBinding, item: TaskGroupWithAllTasks, _: List<TaskGroupWithAllTasks>, position: Int ->
+                ) { binding: ItemTodoGroupBinding, item: TaskGroupWithAllTasks, _: List<TaskGroupWithAllTasks>, _: Int ->
 
                     binding.root.layoutParams.width =
                         ((Resources.getSystem().displayMetrics.widthPixels / 2) - dpToPx(
                             requireContext(),
                             20f
                         )).toInt()
-
-                    if (position % 2 == 0) {
-                        binding.root.animation =
-                            AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-                    } else {
-                        binding.root.animation =
-                            AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
-                    }
 
                     val completed = item.tasks.filter { it.isCompleted }.size
 
@@ -157,6 +155,21 @@ class TodoHomeFragment : Fragment() {
                         bundle.putInt("groupId", item.id)
                         replaceFragment(TodoTaskFragment.getInstance(), bundle)
                     }
+
+                    binding.root.setOnLongClickListener {
+                        val bundle = Bundle()
+                        bundle.putParcelable("group", TaskGroup(item.id, item.name))
+                        val crudGroupFragment = CrudGroupFragment.getInstance() {
+                            viewModel.refreshData()
+                        }
+                        crudGroupFragment.arguments = bundle
+                        crudGroupFragment.show(
+                            parentFragmentManager,
+                            crudGroupFragment::class.java.name
+                        )
+
+                        true
+                    }
                 }
                 binding.rvAllGroupLists.adapter = allGroupsAdapter
             } else {
@@ -167,73 +180,69 @@ class TodoHomeFragment : Fragment() {
     }
 
     private fun setupTodayTasksList() {
-        viewModel.todayEndingTasks.observe(this) {
+
+        viewModel.todayEndingTasks.observe(this) { it ->
 
             if (it == null || it.isEmpty()) {
                 binding.rvTodayTask.visibility = View.GONE
                 binding.layoutEmptyMessageTodayTask.tvEmptyMessage.visibility = View.VISIBLE
-                return@observe
             } else {
                 binding.rvTodayTask.visibility = View.VISIBLE
                 binding.layoutEmptyMessageTodayTask.tvEmptyMessage.visibility = View.GONE
             }
 
-            if (binding.rvTodayTask.adapter == null) {
-                todayTasksAdapter = GenericRecyclerAdapter(
-                    it,
-                    ItemAllTaskBinding::class.java
-                ) { binding: ItemAllTaskBinding, item: Task, _: List<Task>, _: Int ->
-                    binding.tvTaskName.text = item.title
-                    binding.tvTaskDetails.text = item.description
-                    binding.tvDate.text = item.date
+            todayTasksAdapter = GenericRecyclerAdapter(
+                it,
+                ItemAllTaskBinding::class.java
+            ) { binding: ItemAllTaskBinding, item: Task, _: List<Task>, _: Int ->
+                binding.tvTaskName.text = item.title
+                binding.tvTaskDetails.text = item.description
+                binding.tvDate.text = item.date
 
-                    if (item.isCompleted)
-                        binding.btnToggleCompleted.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.ic_tick_filled
-                            )
+                if (item.isCompleted)
+                    binding.btnToggleCompleted.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.ic_tick_filled
                         )
-                    else
-                        binding.btnToggleCompleted.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.ic_bullseye
-                            )
+                    )
+                else
+                    binding.btnToggleCompleted.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.ic_bullseye
                         )
+                    )
 
-                    if (item.description.isEmpty())
-                        binding.tvTaskDetails.visibility = View.GONE
+                if (item.description.isEmpty())
+                    binding.tvTaskDetails.visibility = View.GONE
 
-                    if (item.date.isEmpty())
-                        binding.tvDate.visibility = View.GONE
+                if (item.date.isEmpty())
+                    binding.tvDate.visibility = View.GONE
 
-                    binding.btnToggleCompleted.setOnClickListener {
-                        item.isCompleted = !item.isCompleted
-                        todoTaskViewModel.updateTask(item) {
-                            viewModel.refreshGroupItem(item.groupId, item.id)
-                        }
-                    }
-
-                    binding.root.setOnClickListener {
-                        val bundle = Bundle()
-                        bundle.putParcelable("task", item)
-                        bundle.putInt("groupId", item.groupId)
-                        routeToAddUpdateFragment(bundle)
+                binding.btnToggleCompleted.setOnClickListener {
+                    item.isCompleted = !item.isCompleted
+                    todoTaskViewModel.updateTask(item) {
+                        viewModel.refreshData()
                     }
                 }
-                binding.rvTodayTask.adapter = todayTasksAdapter
-            } else {
-                todayTasksAdapter.refreshData(it)
+
+                binding.root.setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putParcelable("task", item)
+                    bundle.putInt("groupId", item.groupId)
+                    routeToAddUpdateFragment(bundle)
+                }
             }
+            binding.rvTodayTask.adapter = todayTasksAdapter
 
         }
     }
 
     private fun routeToAddUpdateFragment(bundle: Bundle) {
-        val addTaskFragment = AddTaskFragment.getInstance()
-        addTaskFragment.arguments = bundle
-        addTaskFragment.show(parentFragmentManager, addTaskFragment::class.java.name)
+        val crudTaskFragment = CrudTaskFragment.getInstance()
+        crudTaskFragment.arguments = bundle
+        crudTaskFragment.show(parentFragmentManager, crudTaskFragment::class.java.name)
     }
 
     private fun replaceFragment(fragment: Fragment, bundle: Bundle) {
@@ -265,8 +274,7 @@ class TodoHomeFragment : Fragment() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.refreshData()
+    override fun onResume() {
+        super.onResume()
     }
 }

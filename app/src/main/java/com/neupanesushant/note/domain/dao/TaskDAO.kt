@@ -1,4 +1,4 @@
-package com.neupanesushant.note.domain.repo
+package com.neupanesushant.note.domain.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
@@ -23,9 +23,13 @@ interface TaskDAO {
     fun getTodayEndingTasks(query: SupportSQLiteQuery): Flow<List<Task>>
 
     @RawQuery(observedEntities = [Task::class])
-    fun getTaskFromGroupID(query: SupportSQLiteQuery): Flow<List<Task>>
+    fun getTasksFromGroupID(query: SupportSQLiteQuery): Flow<List<Task>>
 
     @RawQuery
     suspend fun getTasksFromGroupId(query: SupportSQLiteQuery): List<Task>
+
+    //Int represents number of deleted rows
+    @RawQuery
+    suspend fun deleteAllTaskFromGroupId(query: SupportSQLiteQuery): Int
 
 }

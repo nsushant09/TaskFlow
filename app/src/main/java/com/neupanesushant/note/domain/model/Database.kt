@@ -2,9 +2,9 @@ package com.neupanesushant.note.domain.model
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.neupanesushant.note.domain.repo.NoteDetailsDAO
-import com.neupanesushant.note.domain.repo.TaskDAO
-import com.neupanesushant.note.domain.repo.TaskGroupDAO
+import com.neupanesushant.note.domain.dao.NoteDetailsDAO
+import com.neupanesushant.note.domain.dao.TaskDAO
+import com.neupanesushant.note.domain.dao.TaskGroupDAO
 
 @Database(
     entities = [NoteDetails::class, Task::class, TaskGroup::class],

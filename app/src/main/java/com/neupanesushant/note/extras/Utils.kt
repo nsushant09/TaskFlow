@@ -17,6 +17,11 @@ import java.util.*
 object Utils {
     fun getCurrentDate(): Date = Calendar.getInstance().time
 
+    @SuppressLint("SimpleDateFormat")
+    fun getTodayDate(): String {
+        return SimpleDateFormat("dd/MM/yyyy").format(Utils.getCurrentDate()).toString()
+    }
+
     @RequiresApi(Build.VERSION_CODES.Q)
     fun showKeyboard(activity: Activity?, view: View) {
         view.requestFocus()
@@ -62,3 +67,5 @@ object Utils {
     }
 
 }
+
+

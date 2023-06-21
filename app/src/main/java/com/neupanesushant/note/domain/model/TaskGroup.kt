@@ -11,5 +11,5 @@ import com.neupanesushant.note.data.RoomConvertors
 data class TaskGroup(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val name: String,
+    var name: String,
 ) : Parcelable

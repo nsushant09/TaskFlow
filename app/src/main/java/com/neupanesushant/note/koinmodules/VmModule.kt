@@ -24,6 +24,6 @@ val vmModule = module {
     }
 
     viewModel {
-        TodoTaskViewModel(get(), get())
+        TodoTaskViewModel(get())
     }
 }

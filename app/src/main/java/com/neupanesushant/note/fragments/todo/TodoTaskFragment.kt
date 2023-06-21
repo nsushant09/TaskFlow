@@ -17,7 +17,6 @@ import com.neupanesushant.note.databinding.FragmentTodoTaskBinding
 import com.neupanesushant.note.databinding.ItemAllTaskBinding
 import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.extras.Utils
-import com.neupanesushant.note.extras.Utils.showText
 import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
 
@@ -28,7 +27,9 @@ class TodoTaskFragment() : Fragment() {
 
     private lateinit var groupName: String
     private var groupId = -1;
+
     private val viewModel: TodoTaskViewModel by inject()
+    private val homeViewModel: TodoHomeViewModel by inject()
 
     private lateinit var allTasksAdapter: GenericRecyclerAdapter<Task, ItemAllTaskBinding>
 
@@ -92,9 +93,9 @@ class TodoTaskFragment() : Fragment() {
 
         binding.etSearch.addTextChangedListener {
             if (it == null || it.isEmpty()) {
-                viewModel.refreshTasks()
+                viewModel.refreshTasksToDisplay()
             } else {
-                viewModel.searchTaskWithString(it.toString())
+                viewModel.searchTasksWithTarget(it.toString())
             }
         }
 
@@ -127,6 +128,12 @@ class TodoTaskFragment() : Fragment() {
                     ItemAllTaskBinding::class.java
                 ) { binding: ItemAllTaskBinding, item: Task, _: List<Task>, position: Int ->
 
+                    if (item.description.isEmpty())
+                        binding.tvTaskDetails.visibility = View.GONE
+
+                    if (item.date.isEmpty())
+                        binding.tvDate.visibility = View.GONE
+
                     binding.tvTaskName.text = item.title
                     binding.tvTaskDetails.text = item.description
                     binding.tvDate.text = item.date
@@ -145,12 +152,6 @@ class TodoTaskFragment() : Fragment() {
                                 R.drawable.ic_bullseye
                             )
                         )
-
-                    if (item.description.isEmpty())
-                        binding.tvTaskDetails.visibility = View.GONE
-
-                    if (item.date.isEmpty())
-                        binding.tvDate.visibility = View.GONE
 
                     binding.btnToggleCompleted.setOnClickListener {
                         item.isCompleted = !item.isCompleted
@@ -193,9 +194,13 @@ class TodoTaskFragment() : Fragment() {
     }
 
     private fun routeToAddUpdateFragment(bundle: Bundle) {
-        val addTaskFragment = AddTaskFragment.getInstance()
-        addTaskFragment.arguments = bundle
-        addTaskFragment.show(parentFragmentManager, addTaskFragment::class.java.name)
+        val crudTaskFragment = CrudTaskFragment.getInstance()
+        crudTaskFragment.arguments = bundle
+        crudTaskFragment.show(parentFragmentManager, crudTaskFragment::class.java.name)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     companion object {

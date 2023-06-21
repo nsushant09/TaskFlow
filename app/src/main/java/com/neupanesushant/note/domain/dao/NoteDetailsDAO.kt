@@ -1,4 +1,4 @@
-package com.neupanesushant.note.domain.repo
+package com.neupanesushant.note.domain.dao
 
 import androidx.room.*
 import com.neupanesushant.note.domain.model.NoteDetails

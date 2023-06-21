@@ -1,4 +1,4 @@
-package com.neupanesushant.note.domain.repo
+package com.neupanesushant.note.domain.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
@@ -21,8 +21,5 @@ interface TaskGroupDAO {
     suspend fun delete(taskGroup: TaskGroup)
 
     @Query("SELECT * FROM " + Constants.TASKGROUP_TABLE)
-    fun getAllTaskGroup(): Flow<List<TaskGroup>?>
-
-    @RawQuery(observedEntities = [TaskGroup::class])
-    fun getTaskGroupFromId(query: SupportSQLiteQuery): Flow<TaskGroup>
+    suspend fun getAllTaskGroup(): List<TaskGroup>
 }

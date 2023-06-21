@@ -90,8 +90,8 @@ class NoteFragment : Fragment() {
     }
 
     private fun setupObserver() {
-        viewModel.notesToDisplay.observe(viewLifecycleOwner) {
 
+        viewModel.notesToDisplay.observe(viewLifecycleOwner) {
             if (it == null || it.isEmpty()) {
                 binding.rvAllNotes.visibility = View.GONE
                 binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.VISIBLE
@@ -101,43 +101,37 @@ class NoteFragment : Fragment() {
                 binding.layoutEmptyMessage.tvEmptyMessage.visibility = View.GONE
             }
 
-            it.let {
-                if (binding.rvAllNotes.adapter == null) {
-                    adapter = GenericRecyclerAdapter(
-                        it, ItemAllNoteBinding::class.java
-                    ) { binding: ItemAllNoteBinding, item: NoteDetails, _: List<NoteDetails>, position: Int ->
-                        when (position % 5) {
-                            1 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightblue)
-                            2 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightcreame)
-                            3 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightgreen)
-                            4 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightpink)
-                            0 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightorange)
-                        }
-                        if (position % 2 == 0) {
-                            binding.root.animation =
-                                AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-                        } else {
-                            binding.root.animation =
-                                AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
-                        }
-
-                        binding.tvTitle.text = item.title
-                        binding.tvDescription.text = item.description
-                        binding.tvDate.text = item.date
-                        binding.root.setOnClickListener {
-                            onNoteLayoutClick(item)
-                        }
+            if (binding.rvAllNotes.adapter == null) {
+                adapter = GenericRecyclerAdapter(
+                    it, ItemAllNoteBinding::class.java
+                ) { binding: ItemAllNoteBinding, item: NoteDetails, _: List<NoteDetails>, position: Int ->
+                    when (position % 5) {
+                        1 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightblue)
+                        2 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightcreame)
+                        3 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightgreen)
+                        4 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightpink)
+                        0 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightorange)
                     }
-                    binding.rvAllNotes.adapter = adapter
-                } else {
-                    adapter.refreshData(it)
+                    if (position % 2 == 0) {
+                        binding.root.animation =
+                            AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
+                    } else {
+                        binding.root.animation =
+                            AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
+                    }
+
+                    binding.tvTitle.text = item.title
+                    binding.tvDescription.text = item.description
+                    binding.tvDate.text = item.date
+                    binding.root.setOnClickListener {
+                        onNoteLayoutClick(item)
+                    }
                 }
+                binding.rvAllNotes.adapter = adapter
+            } else {
+                adapter.refreshData(it)
             }
         }
-    }
-
-    private fun setupNotesToDisplay() {
-
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -166,8 +160,7 @@ class NoteFragment : Fragment() {
             if (it == null || it.isEmpty()) {
                 viewModel.refreshNotesToDisplay()
             } else {
-//                viewModel.searchNoteWithString(it.toString())
-
+                viewModel.searchNoteWithString(it.toString())
             }
         }
     }

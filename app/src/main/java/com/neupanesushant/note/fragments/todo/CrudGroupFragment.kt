@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.neupanesushant.note.R
-import com.neupanesushant.note.databinding.FragmentAddGroupBinding
+import com.neupanesushant.note.databinding.FragmentCrudGroupBinding
 import com.neupanesushant.note.domain.model.TaskGroup
 import org.koin.android.ext.android.inject
 
-class AddGroupFragment : BottomSheetDialogFragment() {
+class CrudGroupFragment(private val onSuccessListener: () -> Unit) : BottomSheetDialogFragment() {
 
-    private lateinit var _binding: FragmentAddGroupBinding
+    private lateinit var _binding: FragmentCrudGroupBinding
     private val binding get() = _binding
 
     private var group: TaskGroup? = null
@@ -29,24 +29,51 @@ class AddGroupFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddGroupBinding.inflate(layoutInflater)
+        _binding = FragmentCrudGroupBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        arguments?.let {
+            group = it.getParcelable("group")
+        }
+
         setupView()
         setupEventListener()
         setupObserver()
     }
 
     private fun setupView() {
+        group?.let {
+            binding.etAddGroupName.setText(it.name.toString())
+            binding.btnDeleteGroup.visibility = View.VISIBLE
+        }
     }
 
     private fun setupEventListener() {
-        binding.btnAddGroup.setOnClickListener {
+        binding.btnSaveGroup.setOnClickListener {
             if (isValidGroupName()) {
-                viewModel.addNewGroup(binding.etAddGroupName.text.toString())
+                if (group == null) {
+                    viewModel.addNewGroup(binding.etAddGroupName.text.toString()) {
+                        onSuccessListener()
+                    }
+                } else {
+                    group!!.name = binding.etAddGroupName.text.toString()
+                    viewModel.updateGroup(group!!) {
+                        onSuccessListener()
+                    }
+                }
+                this.dismiss()
+            }
+        }
+
+        binding.btnDeleteGroup.setOnClickListener {
+            group?.let {
+                viewModel.deleteGroup(it) {
+                    onSuccessListener()
+                }
                 this.dismiss()
             }
         }
@@ -65,8 +92,8 @@ class AddGroupFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        fun getInstance(): AddGroupFragment {
-            return AddGroupFragment()
+        fun getInstance(onSuccessListener: () -> Unit): CrudGroupFragment {
+            return CrudGroupFragment(onSuccessListener)
         }
     }
 }

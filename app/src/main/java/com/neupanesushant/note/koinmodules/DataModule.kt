@@ -2,12 +2,15 @@ package com.neupanesushant.note.koinmodules
 
 import android.app.Application
 import androidx.room.Room
+import com.neupanesushant.note.data.NoteRepoImpl
 import com.neupanesushant.note.data.QuoteImpl
-import com.neupanesushant.note.domain.repo.QuotesAPI
+import com.neupanesushant.note.data.TaskGroupRepoImpl
+import com.neupanesushant.note.data.TaskRepoImpl
 import com.neupanesushant.note.domain.model.Database
-import com.neupanesushant.note.domain.repo.NoteDetailsDAO
-import com.neupanesushant.note.domain.repo.TaskDAO
-import com.neupanesushant.note.domain.repo.TaskGroupDAO
+import com.neupanesushant.note.domain.repo.*
+import com.neupanesushant.note.domain.dao.NoteDetailsDAO
+import com.neupanesushant.note.domain.dao.TaskDAO
+import com.neupanesushant.note.domain.dao.TaskGroupDAO
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -56,5 +59,17 @@ val dataModule = module {
 
     single {
         QuoteImpl(get())
+    }
+
+    single<TaskRepo> {
+        TaskRepoImpl(get())
+    }
+
+    single<TaskGroupRepo> {
+        TaskGroupRepoImpl(get(), get())
+    }
+
+    single<NoteRepo> {
+        NoteRepoImpl(get())
     }
 }

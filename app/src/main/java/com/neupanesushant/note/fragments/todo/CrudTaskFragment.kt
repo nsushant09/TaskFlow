@@ -11,17 +11,15 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.neupanesushant.note.R
-import com.neupanesushant.note.databinding.FragmentAddTaskBinding
+import com.neupanesushant.note.databinding.FragmentCrudTaskBinding
 import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.extras.Utils.showText
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.util.Date
 
-class AddTaskFragment : BottomSheetDialogFragment() {
+class CrudTaskFragment : BottomSheetDialogFragment() {
 
-    private lateinit var _binding: FragmentAddTaskBinding
+    private lateinit var _binding: FragmentCrudTaskBinding
     private val binding get() = _binding
 
     private var groupId = -1;
@@ -38,7 +36,7 @@ class AddTaskFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddTaskBinding.inflate(layoutInflater)
+        _binding = FragmentCrudTaskBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -134,8 +132,8 @@ class AddTaskFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        fun getInstance(): AddTaskFragment {
-            return AddTaskFragment()
+        fun getInstance(): CrudTaskFragment {
+            return CrudTaskFragment()
         }
     }
 }

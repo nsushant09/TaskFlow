@@ -61,7 +61,6 @@ class GenericRecyclerAdapter<T : Any, VM : ViewBinding>(
 
         diffList.dispatchUpdatesTo(this)
     }
-
     inner class BindingHolder(val binding: VM) : RecyclerView.ViewHolder(binding.root)
 
     override fun getItemId(position: Int): Long {
