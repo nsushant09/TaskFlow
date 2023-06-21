@@ -41,6 +41,10 @@ object Utils {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
+    fun getRawFiles(context: Context, fileName: String): Int {
+        return context.resources.getIdentifier(fileName, "raw", context.packageName)
+    }
+
     fun isTargetInString(string: String, target: String): Boolean {
         val lengthOfTarget = target.length
         val list = string.split(" ")

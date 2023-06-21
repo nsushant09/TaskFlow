@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,6 +74,8 @@ class NoteFragment : Fragment() {
         binding.btnAddNote.animation =
             AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
 
+        val anim = Utils.getRawFiles(requireContext(), "lottie_empty_list")
+        binding.layoutEmptyMessage.emptyAnimationView.setAnimation(anim)
         binding.layoutEmptyMessage.tvEmptyMessage.text =
             "There are no notes.\nClick on the Add Button below to add new notes"
     }

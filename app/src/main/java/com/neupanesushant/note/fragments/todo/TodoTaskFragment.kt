@@ -79,6 +79,8 @@ class TodoTaskFragment() : Fragment() {
         binding.btnAddTask.animation =
             AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
 
+        val anim = Utils.getRawFiles(requireContext(), "lottie_empty_list")
+        binding.layoutEmptyMessage.emptyAnimationView.setAnimation(anim)
         binding.layoutEmptyMessage.tvEmptyMessage.text =
             "There are no tasks.\nClick on the Add Button below to add new tasks"
     }

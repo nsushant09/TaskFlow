@@ -81,28 +81,24 @@ class TodoHomeFragment : Fragment() {
         binding.btnAddGroup.animation =
             AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
 
+
+        binding.layoutEmptyMessageGroup.emptyAnimationView.visibility = View.GONE
         binding.layoutEmptyMessageGroup.tvEmptyMessage.text =
             "There are no task groups\nClick on add button to add a new group"
 
+        val todayAnim = Utils.getRawFiles(requireContext(), "lottie_checklist")
+        binding.layoutEmptyMessageTodayTask.emptyAnimationView.setAnimation(todayAnim)
         binding.layoutEmptyMessageTodayTask.tvEmptyMessage.text =
-            "Finally Some Rest!!\nThere are no tasks today"
+            "All tasks for today completed"
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun setupEventListener() {
-        searchButtonListener()
 
         binding.btnAddGroup.setOnClickListener {
             val crudGroupFragment = CrudGroupFragment.getInstance() {
                 viewModel.refreshData()
             }
             crudGroupFragment.show(parentFragmentManager, crudGroupFragment::class.java.name)
-        }
-
-        binding.etSearch.addTextChangedListener {
-            if (it == null || it.isEmpty()) {
-            } else {
-            }
         }
     }
 
@@ -251,27 +247,6 @@ class TodoHomeFragment : Fragment() {
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun searchButtonListener() {
-        binding.btnSearch.setOnClickListener {
-            if (viewModel.isSearchFieldVisible.value!!) {
-                binding.etSearch.clearFocus()
-                binding.etSearch.animation =
-                    AnimationUtils.loadAnimation(requireContext(), R.anim.slide_out_right)
-                binding.etSearch.visibility = View.GONE
-                Utils.hideKeyboard(activity, binding.etSearch)
-                viewModel.setSearchFieldVisibility(false)
-            } else {
-                binding.etSearch.visibility = View.VISIBLE
-                binding.etSearch.animation =
-                    AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_right)
-                Utils.showKeyboard(activity, binding.etSearch)
-                viewModel.setSearchFieldVisibility(true)
-            }
-        }
-
     }
 
     override fun onResume() {
