@@ -2,7 +2,7 @@ package com.neupanesushant.note.fragments.note
 
 import androidx.lifecycle.*
 import com.neupanesushant.note.domain.model.NoteDetails
-import com.neupanesushant.note.domain.repo.NoteRepo
+import com.neupanesushant.note.data.repo.NoteRepo
 import kotlinx.coroutines.*
 
 class AddNoteViewModel(private val noteRepo: NoteRepo) : ViewModel() {

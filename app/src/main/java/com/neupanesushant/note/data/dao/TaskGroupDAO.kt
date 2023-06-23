@@ -1,4 +1,4 @@
-package com.neupanesushant.note.domain.dao
+package com.neupanesushant.note.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

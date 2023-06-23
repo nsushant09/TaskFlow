@@ -1,4 +1,4 @@
-package com.neupanesushant.note.domain.repo
+package com.neupanesushant.note.data.repo
 
 import com.neupanesushant.note.domain.model.TaskGroup
 import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks

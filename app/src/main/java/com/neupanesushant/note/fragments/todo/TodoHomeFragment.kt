@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +22,7 @@ import com.neupanesushant.note.databinding.ItemTodoGroupBinding
 import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.domain.model.TaskGroup
 import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
-import com.neupanesushant.note.dpToPx
+import com.neupanesushant.note.extras.dpToPx
 import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
 
@@ -62,6 +61,10 @@ class TodoHomeFragment : Fragment() {
             requireContext(), androidx.appcompat.R.anim.abc_slide_in_top
         )
 
+        binding.todayTitle.animation = AnimationUtils.loadAnimation(
+            requireContext(), androidx.appcompat.R.anim.abc_slide_in_top
+        )
+
         binding.rvAllGroupLists.animation = AnimationUtils.loadAnimation(
             context,
             androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom
@@ -82,10 +85,13 @@ class TodoHomeFragment : Fragment() {
             AnimationUtils.loadAnimation(requireContext(), R.anim.bounce_slide_in_right)
 
 
+
         binding.layoutEmptyMessageGroup.emptyAnimationView.visibility = View.GONE
         binding.layoutEmptyMessageGroup.tvEmptyMessage.text =
             "There are no task groups\nClick on add button to add a new group"
 
+        binding.layoutEmptyMessageTodayTask.emptyAnimationView.animation =
+            AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
         val todayAnim = Utils.getRawFiles(requireContext(), "lottie_checklist")
         binding.layoutEmptyMessageTodayTask.emptyAnimationView.setAnimation(todayAnim)
         binding.layoutEmptyMessageTodayTask.tvEmptyMessage.text =

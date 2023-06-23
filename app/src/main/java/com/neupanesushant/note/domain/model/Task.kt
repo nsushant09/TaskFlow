@@ -4,7 +4,6 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.neupanesushant.note.data.RoomConvertors
 import com.neupanesushant.note.extras.Constants
 
 @Entity(tableName = Constants.TASK_TABLE)

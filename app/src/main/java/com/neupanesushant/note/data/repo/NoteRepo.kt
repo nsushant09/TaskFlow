@@ -1,4 +1,4 @@
-package com.neupanesushant.note.domain.repo
+package com.neupanesushant.note.data.repo
 
 import com.neupanesushant.note.domain.model.NoteDetails
 import kotlinx.coroutines.flow.Flow
@@ -8,5 +8,6 @@ interface NoteRepo {
     suspend fun update(noteDetails: NoteDetails)
     suspend fun delete(noteDetails: NoteDetails)
     suspend fun getAllNotes(): Flow<List<NoteDetails>>
-    fun cachedAllNotes(): List<NoteDetails>
+    fun getAllCachedNotes(): List<NoteDetails>
+    fun setAllNotesCache(notes: List<NoteDetails>)
 }

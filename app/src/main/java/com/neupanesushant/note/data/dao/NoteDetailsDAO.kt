@@ -1,4 +1,4 @@
-package com.neupanesushant.note.domain.dao
+package com.neupanesushant.note.data.dao
 
 import androidx.room.*
 import com.neupanesushant.note.domain.model.NoteDetails
@@ -18,5 +18,5 @@ interface NoteDetailsDAO {
     suspend fun delete(noteDetails: NoteDetails)
 
     @Query("SELECT * FROM ${Constants.NOTEDETAILS_TABLE} ORDER BY id DESC")
-    fun readAllNote(): Flow<List<NoteDetails>>
+    fun getAllNote(): Flow<List<NoteDetails>>
 }

@@ -1,4 +1,4 @@
-package com.neupanesushant.note.data
+package com.neupanesushant.note.domain.model
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

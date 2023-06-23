@@ -1,4 +1,4 @@
-package com.neupanesushant.note.domain.repo
+package com.neupanesushant.note.data.repo
 
 import com.neupanesushant.note.domain.model.Task
 import kotlinx.coroutines.flow.Flow

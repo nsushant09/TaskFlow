@@ -1,8 +1,8 @@
-package com.neupanesushant.note.data
+package com.neupanesushant.note.data.repo
 
 import com.neupanesushant.note.domain.model.NoteDetails
-import com.neupanesushant.note.domain.dao.NoteDetailsDAO
-import com.neupanesushant.note.domain.repo.NoteRepo
+import com.neupanesushant.note.data.dao.NoteDetailsDAO
+import com.neupanesushant.note.data.repo.NoteRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -13,17 +13,6 @@ import kotlinx.coroutines.launch
 class NoteRepoImpl(private val noteDetailsDAO: NoteDetailsDAO) : NoteRepo {
 
     private var cachedAllNote: List<NoteDetails> = emptyList()
-
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            noteDetailsDAO.readAllNote().flowOn(
-                Dispatchers.IO
-            ).collectLatest {
-                cachedAllNote = it
-            }
-        }
-    }
-
     override suspend fun insert(noteDetails: NoteDetails) {
         noteDetailsDAO.insert(noteDetails)
     }
@@ -36,8 +25,10 @@ class NoteRepoImpl(private val noteDetailsDAO: NoteDetailsDAO) : NoteRepo {
         noteDetailsDAO.delete(noteDetails)
     }
 
-    override suspend fun getAllNotes(): Flow<List<NoteDetails>> = noteDetailsDAO.readAllNote()
+    override suspend fun getAllNotes(): Flow<List<NoteDetails>> = noteDetailsDAO.getAllNote()
 
-    override fun cachedAllNotes(): List<NoteDetails> = cachedAllNote
-
+    override fun getAllCachedNotes(): List<NoteDetails> = cachedAllNote
+    override fun setAllNotesCache(notes: List<NoteDetails>) {
+        cachedAllNote = notes
+    }
 }

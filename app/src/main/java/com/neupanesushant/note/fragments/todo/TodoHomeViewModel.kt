@@ -10,10 +10,10 @@ import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.extras.Constants
 import com.neupanesushant.note.domain.model.TaskGroup
 import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
-import com.neupanesushant.note.domain.dao.TaskDAO
-import com.neupanesushant.note.domain.dao.TaskGroupDAO
-import com.neupanesushant.note.domain.repo.TaskGroupRepo
-import com.neupanesushant.note.domain.repo.TaskRepo
+import com.neupanesushant.note.data.dao.TaskDAO
+import com.neupanesushant.note.data.dao.TaskGroupDAO
+import com.neupanesushant.note.data.repo.TaskGroupRepo
+import com.neupanesushant.note.data.repo.TaskRepo
 import com.neupanesushant.note.extras.Utils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest

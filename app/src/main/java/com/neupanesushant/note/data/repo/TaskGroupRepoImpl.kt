@@ -1,14 +1,12 @@
-package com.neupanesushant.note.data
+package com.neupanesushant.note.data.repo
 
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.neupanesushant.note.domain.dao.TaskDAO
-import com.neupanesushant.note.domain.dao.TaskGroupDAO
+import com.neupanesushant.note.data.dao.TaskDAO
+import com.neupanesushant.note.data.dao.TaskGroupDAO
 import com.neupanesushant.note.domain.model.TaskGroup
 import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
-import com.neupanesushant.note.domain.repo.TaskGroupRepo
 import com.neupanesushant.note.extras.Constants
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
 
 class TaskGroupRepoImpl(private val taskGroupDAO: TaskGroupDAO, private val taskDAO: TaskDAO) :
     TaskGroupRepo {

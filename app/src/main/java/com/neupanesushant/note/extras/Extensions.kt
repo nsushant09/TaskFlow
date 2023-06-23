@@ -1,4 +1,4 @@
-package com.neupanesushant.note
+package com.neupanesushant.note.extras
 
 import android.app.Activity
 import android.content.Context

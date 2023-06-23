@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neupanesushant.note.domain.model.NoteDetails
-import com.neupanesushant.note.domain.repo.NoteRepo
+import com.neupanesushant.note.data.repo.NoteRepo
 import com.neupanesushant.note.extras.Utils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
@@ -23,17 +23,18 @@ class NoteViewModel(private val noteRepo: NoteRepo) : ViewModel() {
         viewModelScope.launch {
             noteRepo.getAllNotes().flowOn(Dispatchers.Default).collectLatest {
                 _notesToDisplay.postValue(it)
+                noteRepo.setAllNotesCache(it)
             }
         }
         _isSearchFieldVisible.value = false
     }
 
     fun refreshNotesToDisplay() {
-        _notesToDisplay.value = noteRepo.cachedAllNotes()
+        _notesToDisplay.value = noteRepo.getAllCachedNotes()
     }
 
     fun refreshNotesIfDifferent(oldNotes: List<NoteDetails>) {
-        if (oldNotes != noteRepo.cachedAllNotes()) {
+        if (oldNotes != noteRepo.getAllCachedNotes()) {
             refreshNotesToDisplay()
         }
     }
@@ -43,7 +44,7 @@ class NoteViewModel(private val noteRepo: NoteRepo) : ViewModel() {
     }
 
     fun searchNoteWithString(target: String) {
-        _notesToDisplay.value = noteRepo.cachedAllNotes().filter {
+        _notesToDisplay.value = noteRepo.getAllCachedNotes().filter {
             Utils.isTargetInString(it.title, target)
         }
     }

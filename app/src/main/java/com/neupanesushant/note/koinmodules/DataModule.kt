@@ -2,15 +2,18 @@ package com.neupanesushant.note.koinmodules
 
 import android.app.Application
 import androidx.room.Room
-import com.neupanesushant.note.data.NoteRepoImpl
-import com.neupanesushant.note.data.QuoteImpl
-import com.neupanesushant.note.data.TaskGroupRepoImpl
-import com.neupanesushant.note.data.TaskRepoImpl
+import com.neupanesushant.note.data.repo.NoteRepoImpl
+import com.neupanesushant.note.data.repo.QuoteImpl
+import com.neupanesushant.note.data.repo.TaskGroupRepoImpl
+import com.neupanesushant.note.data.repo.TaskRepoImpl
+import com.neupanesushant.note.data.repo.NoteRepo
+import com.neupanesushant.note.data.repo.QuotesAPI
+import com.neupanesushant.note.data.repo.TaskGroupRepo
+import com.neupanesushant.note.data.repo.TaskRepo
 import com.neupanesushant.note.domain.model.Database
-import com.neupanesushant.note.domain.repo.*
-import com.neupanesushant.note.domain.dao.NoteDetailsDAO
-import com.neupanesushant.note.domain.dao.TaskDAO
-import com.neupanesushant.note.domain.dao.TaskGroupDAO
+import com.neupanesushant.note.data.dao.NoteDetailsDAO
+import com.neupanesushant.note.data.dao.TaskDAO
+import com.neupanesushant.note.data.dao.TaskGroupDAO
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 import retrofit2.Retrofit

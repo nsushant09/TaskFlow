@@ -1,7 +1,7 @@
-package com.neupanesushant.note.data
+package com.neupanesushant.note.data.repo
 
 import com.neupanesushant.note.domain.model.Quote
-import com.neupanesushant.note.domain.repo.QuotesAPI
+import com.neupanesushant.note.data.repo.QuotesAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -23,7 +23,7 @@ class QuoteImpl(private val quotesAPI: QuotesAPI) {
             }
 
             tempList.addAll(deferredQuotes.awaitAll())
-            quotes.value = tempList
+            quotes.emit(tempList)
         }
     }
 
