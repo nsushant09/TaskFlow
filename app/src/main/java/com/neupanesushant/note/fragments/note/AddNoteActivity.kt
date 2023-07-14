@@ -1,18 +1,16 @@
 package com.neupanesushant.note.fragments.note
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.ActivityAddNoteBinding
 import com.neupanesushant.note.domain.model.NoteDetails
+import com.neupanesushant.note.extras.Utils
 import org.koin.android.ext.android.inject
 import java.time.LocalDate
 
@@ -30,12 +28,12 @@ class AddNoteActivity : AppCompatActivity() {
 
         isOpenedFromNoteLayout = intent.getBooleanExtra("isOpenedFromNoteLayout", false)
         if (isOpenedFromNoteLayout) {
-            currentNoteObject = intent.getParcelableExtra<NoteDetails>("currentNoteObject")!!
+            currentNoteObject = intent.getParcelableExtra("currentNoteObject")!!
             binding.etTitle.setText(currentNoteObject.title)
             binding.etDescription.setText(currentNoteObject.description)
-            setupInputStart(binding.etDescription)
+            Utils.showKeyboard(this, binding.etDescription)
         } else {
-            setupInputStart(binding.etTitle)
+            Utils.showKeyboard(this, binding.etTitle)
         }
 
         setupView()
@@ -54,7 +52,7 @@ class AddNoteActivity : AppCompatActivity() {
             if (binding.etTitle.isFocused) {
                 binding.etTitle.clearFocus()
             }
-            setupInputStart(binding.etDescription)
+            Utils.showKeyboard(this, binding.etDescription)
         }
         binding.btnBack.setOnClickListener {
             finish()
@@ -62,15 +60,6 @@ class AddNoteActivity : AppCompatActivity() {
     }
 
     private fun setupObserver() {
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun setupInputStart(editText: EditText) {
-        editText.requestFocus()
-        val imm: InputMethodManager =
-            baseContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(editText, 0)
-        editText.textCursorDrawable = null
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -82,7 +71,7 @@ class AddNoteActivity : AppCompatActivity() {
         val description = binding.etDescription.text.toString()
         val date = LocalDate.now().toString()
         if (isOpenedFromNoteLayout) {
-            currentNoteObject?.let {
+            currentNoteObject.let {
                 if (it.description != description || it.title != title) {
                     viewModel.updateNoteDetails(
                         NoteDetails(
@@ -104,8 +93,8 @@ class AddNoteActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun setupOptionsMenu() {
-        binding.btnMenu.setOnClickListener {
-            val popUpMenu = PopupMenu(this, it)
+        binding.btnMenu.setOnClickListener { menu ->
+            val popUpMenu = PopupMenu(this, menu)
             popUpMenu.menuInflater.inflate(R.menu.add_note_options_menu, popUpMenu.menu)
             popUpMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
