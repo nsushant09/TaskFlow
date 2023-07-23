@@ -27,6 +27,7 @@ class AddNoteActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         isOpenedFromNoteLayout = intent.getBooleanExtra("isOpenedFromNoteLayout", false)
+
         if (isOpenedFromNoteLayout) {
             currentNoteObject = intent.getParcelableExtra("currentNoteObject")!!
             binding.etTitle.setText(currentNoteObject.title)
@@ -64,11 +65,9 @@ class AddNoteActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun addOrUpdateNote() {
-        var title = binding.etTitle.text.toString()
-        if (title.isEmpty()) {
-            title = "Text Note"
-        }
+        val title = binding.etTitle.text.toString()
         val description = binding.etDescription.text.toString()
+
         val date = LocalDate.now().toString()
         if (isOpenedFromNoteLayout) {
             currentNoteObject.let {

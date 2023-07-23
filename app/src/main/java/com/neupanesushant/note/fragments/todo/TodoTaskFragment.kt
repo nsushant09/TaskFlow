@@ -3,7 +3,6 @@ package com.neupanesushant.note.fragments.todo
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentTodoTaskBinding
@@ -124,53 +124,49 @@ class TodoTaskFragment() : Fragment() {
                 binding.layoutEmptyMessage.layout.visibility = View.GONE
             }
 
-            if (binding.rvAllTasks.adapter == null) {
-                allTasksAdapter = GenericRecyclerAdapter(
-                    it,
-                    ItemAllTaskBinding::class.java
-                ) { binding: ItemAllTaskBinding, item: Task, _: List<Task>, position: Int ->
+            allTasksAdapter = GenericRecyclerAdapter(
+                it,
+                ItemAllTaskBinding::class.java
+            ) { binding: ItemAllTaskBinding, item: Task, _: List<Task>, position: Int ->
 
-                    if (item.description.isEmpty())
-                        binding.tvTaskDetails.visibility = View.GONE
+                if (item.description.isEmpty())
+                    binding.tvTaskDetails.visibility = View.GONE
 
-                    if (item.date.isEmpty())
-                        binding.tvDate.visibility = View.GONE
+                if (item.date.isEmpty())
+                    binding.tvDate.visibility = View.GONE
 
-                    binding.tvTaskName.text = item.title
-                    binding.tvTaskDetails.text = item.description
-                    binding.tvDate.text = item.date
+                binding.tvTaskName.text = item.title
+                binding.tvTaskDetails.text = item.description
+                binding.tvDate.text = item.date
 
-                    if (item.isCompleted)
-                        binding.btnToggleCompleted.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.ic_tick_filled
-                            )
+                if (item.isCompleted)
+                    binding.btnToggleCompleted.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.ic_tick_filled
                         )
-                    else
-                        binding.btnToggleCompleted.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.ic_bullseye
-                            )
+                    )
+                else
+                    binding.btnToggleCompleted.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.ic_bullseye
                         )
+                    )
 
-                    binding.btnToggleCompleted.setOnClickListener {
-                        item.isCompleted = !item.isCompleted
-                        viewModel.updateTask(item)
-                    }
-
-                    binding.root.setOnClickListener {
-                        val bundle = Bundle()
-                        bundle.putParcelable("task", item)
-                        bundle.putInt("groupId", groupId)
-                        routeToAddUpdateFragment(bundle)
-                    }
+                binding.btnToggleCompleted.setOnClickListener {
+                    item.isCompleted = !item.isCompleted
+                    viewModel.updateTask(item)
                 }
-                binding.rvAllTasks.adapter = allTasksAdapter
-            } else {
-                allTasksAdapter.refreshData(it)
+
+                binding.root.setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putParcelable("task", item)
+                    bundle.putInt("groupId", groupId)
+                    routeToAddUpdateFragment(bundle)
+                }
             }
+            binding.rvAllTasks.adapter = allTasksAdapter
         }
     }
 

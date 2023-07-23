@@ -46,7 +46,6 @@ class NoteFragment : Fragment() {
         intent.putExtra("isOpenedFromNoteLayout", true)
         intent.putExtra("currentNoteObject", noteDetails)
         startActivity(intent)
-
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -82,6 +81,7 @@ class NoteFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun setupEventListener() {
+
         binding.btnAddNote.setOnClickListener {
             val intent = Intent(requireContext(), AddNoteActivity::class.java)
             intent.putExtra("isOpenedFromNoteLayout", false)

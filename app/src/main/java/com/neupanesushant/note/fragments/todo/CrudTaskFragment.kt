@@ -83,26 +83,34 @@ class CrudTaskFragment : BottomSheetDialogFragment() {
 
             if (binding.etTaskName.text == null || binding.etTaskName.text!!.isEmpty()) {
                 binding.etTaskName.error = "Enter task name"
-            } else {
-                if (task == null) {
-                    viewModel.addTask(
-                        binding.etTaskName.text.toString(),
-                        binding.etTaskDetails.text.toString(),
-                        binding.etDate.text.toString()
-                    )
-
-                    requireContext().showText("Task added")
-                } else {
-                    task?.let {
-                        it.title = binding.etTaskName.text.toString()
-                        it.description = binding.etTaskDetails.text.toString()
-                        it.date = binding.etDate.text.toString()
-                        viewModel.updateTask(it)
-                        requireContext().showText("Task updated")
-                    }
-                }
-                this.dismissAllowingStateLoss()
+                return@setOnClickListener
             }
+
+            if (task == null) {
+                viewModel.addTask(
+                    binding.etTaskName.text.toString(),
+                    binding.etTaskDetails.text.toString(),
+                    binding.etDate.text.toString()
+                )
+                requireContext().showText("Task added")
+            } else {
+
+                if (
+                    task!!.title != binding.etTaskName.text.toString() ||
+                    task!!.description != binding.etTaskDetails.text.toString() ||
+                    task!!.date != binding.etDate.text.toString()
+                ) {
+                    task!!.apply {
+                        title = binding.etTaskName.text.toString()
+                        description = binding.etTaskDetails.text.toString()
+                        date = binding.etDate.text.toString()
+                    }
+                    viewModel.updateTask(task!!)
+                    requireContext().showText("Task updated")
+                }
+            }
+
+            this.dismissAllowingStateLoss()
 
         }
     }
