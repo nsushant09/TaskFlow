@@ -4,14 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.os.Message
-import android.provider.CalendarContract.Calendars
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 
 object Utils {
@@ -35,6 +32,14 @@ object Utils {
         val imm: InputMethodManager =
             activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    fun Activity.hideKeyboard() {
+        val imm: InputMethodManager =
+            this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        currentFocus?.let {
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+        }
     }
 
     fun Context.showText(message: String) {

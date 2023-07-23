@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="popupMenuStyle">@style/popupMenuStyle</item>
         <item name="materialCalendarTheme">@style/CustomMaterialCalendar</item>
+        <item name="colorAccent">@color/primarypurple</item>
 
     </style>
 
@@ -37,4 +38,5 @@
     <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerSize">16dp</item>
     </style>
+
 </resources>

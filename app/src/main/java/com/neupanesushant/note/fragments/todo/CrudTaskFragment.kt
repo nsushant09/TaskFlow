@@ -1,10 +1,12 @@
 package com.neupanesushant.note.fragments.todo
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.datepicker.CalendarConstraints
@@ -13,6 +15,8 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentCrudTaskBinding
 import com.neupanesushant.note.domain.model.Task
+import com.neupanesushant.note.extras.Utils
+import com.neupanesushant.note.extras.Utils.hideKeyboard
 import com.neupanesushant.note.extras.Utils.showText
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
@@ -59,6 +63,11 @@ class CrudTaskFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupView() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Utils.showKeyboard(requireActivity(), binding.etTaskName)
+        }
+
         task?.let { task ->
             binding.etTaskName.setText(task.title)
             binding.etTaskDetails.setText(task.description)
@@ -137,6 +146,11 @@ class CrudTaskFragment : BottomSheetDialogFragment() {
                 SimpleDateFormat("dd/MM/yyyy").format(calenderPicker.selection).toString()
             )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().hideKeyboard()
     }
 
     companion object {

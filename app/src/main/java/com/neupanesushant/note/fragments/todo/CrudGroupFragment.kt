@@ -1,5 +1,6 @@
 package com.neupanesushant.note.fragments.todo
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentCrudGroupBinding
 import com.neupanesushant.note.domain.model.TaskGroup
+import com.neupanesushant.note.extras.Utils
+import com.neupanesushant.note.extras.Utils.hideKeyboard
 import org.koin.android.ext.android.inject
 
 class CrudGroupFragment(private val onSuccessListener: () -> Unit) : BottomSheetDialogFragment() {
@@ -46,6 +49,9 @@ class CrudGroupFragment(private val onSuccessListener: () -> Unit) : BottomSheet
     }
 
     private fun setupView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Utils.showKeyboard(requireActivity(), binding.etAddGroupName)
+        }
         group?.let {
             binding.etAddGroupName.setText(it.name.toString())
             binding.btnDeleteGroup.visibility = View.VISIBLE
@@ -95,5 +101,10 @@ class CrudGroupFragment(private val onSuccessListener: () -> Unit) : BottomSheet
         fun getInstance(onSuccessListener: () -> Unit): CrudGroupFragment {
             return CrudGroupFragment(onSuccessListener)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().hideKeyboard()
     }
 }

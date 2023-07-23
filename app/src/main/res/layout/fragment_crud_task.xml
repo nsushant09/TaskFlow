@@ -27,7 +27,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etTaskName"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:textCursorDrawable="@drawable/cursor_color"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -51,7 +52,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etTaskDetails"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:textCursorDrawable="@drawable/cursor_color"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

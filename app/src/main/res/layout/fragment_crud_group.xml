@@ -45,6 +45,7 @@
             android:layout_height="match_parent"
             android:textColor="@color/black"
             android:textColorHint="@color/black"
+            android:textCursorDrawable="@drawable/cursor_color"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
