@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neupanesushant.note.domain.model.Quote
 import com.neupanesushant.note.data.repo.QuoteImpl
+import com.neupanesushant.note.domain.model.Quote
 import com.neupanesushant.note.domain.model.UIState
 import kotlinx.coroutines.launch
 
@@ -20,10 +20,13 @@ class QuoteViewModel(private val quoteImpl: QuoteImpl) : ViewModel() {
     val listOfQuotes: LiveData<List<Quote>> get() = _listOfQuotes
 
     init {
+        _uiState.value = UIState.LOADING
+
         viewModelScope.launch {
             quoteImpl.quotes.collect {
                 _listOfQuotes.postValue(it.toList())
-                _uiState.postValue(UIState.READY)
+                if (it.size > 0)
+                    _uiState.postValue(UIState.READY)
             }
         }
     }
