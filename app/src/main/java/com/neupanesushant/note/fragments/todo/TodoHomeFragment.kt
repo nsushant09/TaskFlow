@@ -4,26 +4,28 @@ import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.neupanesushant.note.R
-import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.databinding.FragmentTodoHomeBinding
 import com.neupanesushant.note.databinding.ItemAllTaskBinding
 import com.neupanesushant.note.databinding.ItemTodoGroupBinding
 import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.domain.model.TaskGroup
 import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
-import com.neupanesushant.note.extras.dpToPx
+import com.neupanesushant.note.extras.GenericCallback
+import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
+import com.neupanesushant.note.extras.dpToPx
 import org.koin.android.ext.android.inject
 
 class TodoHomeFragment : Fragment() {
@@ -242,7 +244,20 @@ class TodoHomeFragment : Fragment() {
     }
 
     private fun routeToAddUpdateFragment(bundle: Bundle) {
-        val crudTaskFragment = CrudTaskFragment.getInstance()
+        val crudTaskFragment = CrudTaskFragment.getInstance(callback = object :
+            GenericCallback<Task> {
+            override fun callback(data: Task) {
+                Utils.showSnackBar(
+                    requireContext(),
+                    binding.root,
+                    "Accidentally deleted?",
+                    "UNDO",
+                    Snackbar.LENGTH_LONG
+                ) {
+                    todoTaskViewModel.undoDelete(task = data)
+                }
+            }
+        })
         crudTaskFragment.arguments = bundle
         crudTaskFragment.show(parentFragmentManager, crudTaskFragment::class.java.name)
     }
