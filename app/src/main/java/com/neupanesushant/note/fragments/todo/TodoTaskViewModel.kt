@@ -4,13 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.sqlite.db.SimpleSQLiteQuery
-import com.neupanesushant.note.domain.model.Task
-import com.neupanesushant.note.data.dao.TaskDAO
-import com.neupanesushant.note.data.dao.TaskGroupDAO
-import com.neupanesushant.note.domain.model.NoteDetails
 import com.neupanesushant.note.data.repo.TaskRepo
-import com.neupanesushant.note.extras.Constants
+import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.extras.Utils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
@@ -70,6 +65,12 @@ class TodoTaskViewModel(private val taskRepo: TaskRepo) :
                     groupId
                 )
             )
+        }
+    }
+
+    fun undoDelete(task: Task) {
+        scope.launch {
+            taskRepo.insert(task)
         }
     }
 

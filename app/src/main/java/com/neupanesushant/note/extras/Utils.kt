@@ -8,6 +8,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
+import com.neupanesushant.note.R
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -48,6 +51,23 @@ object Utils {
 
     fun getRawFiles(context: Context, fileName: String): Int {
         return context.resources.getIdentifier(fileName, "raw", context.packageName)
+    }
+
+    fun showSnackBar(
+        context : Context,
+        view: View,
+        snackbarMessage: String,
+        buttonText: String,
+        snackbarLength: Int,
+        onClick: View.OnClickListener
+    ) {
+        val snackbar = Snackbar.make(view, snackbarMessage, snackbarLength)
+            .setAction(buttonText, onClick)
+            .setBackgroundTint(ContextCompat.getColor(context, R.color.grey))
+            .setTextColor(ContextCompat.getColor(context, R.color.black))
+            .setActionTextColor(ContextCompat.getColor(context, R.color.primarypurple))
+
+        snackbar.show()
     }
 
     fun isTargetInString(string: String, target: String): Boolean {

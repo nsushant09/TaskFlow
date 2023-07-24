@@ -12,10 +12,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentTodoTaskBinding
 import com.neupanesushant.note.databinding.ItemAllTaskBinding
 import com.neupanesushant.note.domain.model.Task
+import com.neupanesushant.note.extras.GenericCallback
 import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
@@ -191,7 +193,20 @@ class TodoTaskFragment() : Fragment() {
     }
 
     private fun routeToAddUpdateFragment(bundle: Bundle) {
-        val crudTaskFragment = CrudTaskFragment.getInstance()
+        val crudTaskFragment =
+            CrudTaskFragment.getInstance(callback = object : GenericCallback<Task> {
+                override fun callback(data: Task) {
+                    Utils.showSnackBar(
+                        requireContext(),
+                        binding.root,
+                        "Accidentally deleted?",
+                        "UNDO",
+                        Snackbar.LENGTH_LONG
+                    ) {
+                        viewModel.undoDelete(task = data)
+                    }
+                }
+            })
         crudTaskFragment.arguments = bundle
         crudTaskFragment.show(parentFragmentManager, crudTaskFragment::class.java.name)
     }
