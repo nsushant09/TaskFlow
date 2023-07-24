@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentTodoHomeBinding
-import com.neupanesushant.note.databinding.ItemAllTaskBinding
 import com.neupanesushant.note.databinding.ItemTodoGroupBinding
 import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.domain.model.TaskGroup
@@ -26,6 +24,7 @@ import com.neupanesushant.note.extras.GenericCallback
 import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import com.neupanesushant.note.extras.dpToPx
+import com.neupanesushant.note.fragments.todo.adapter.TaskRecyclerAdapter
 import org.koin.android.ext.android.inject
 
 class TodoHomeFragment : Fragment() {
@@ -36,7 +35,6 @@ class TodoHomeFragment : Fragment() {
     private val todoTaskViewModel: TodoTaskViewModel by inject()
 
     private lateinit var allGroupsAdapter: GenericRecyclerAdapter<TaskGroupWithAllTasks, ItemTodoGroupBinding>
-    private lateinit var todayTasksAdapter: GenericRecyclerAdapter<Task, ItemAllTaskBinding>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -195,49 +193,22 @@ class TodoHomeFragment : Fragment() {
                 binding.layoutEmptyMessageTodayTask.layout.visibility = View.GONE
             }
 
-            todayTasksAdapter = GenericRecyclerAdapter(
-                it,
-                ItemAllTaskBinding::class.java
-            ) { binding: ItemAllTaskBinding, item: Task, _: List<Task>, _: Int ->
-                binding.tvTaskName.text = item.title
-                binding.tvTaskDetails.text = item.description
-                binding.tvDate.text = item.date
-
-                if (item.isCompleted)
-                    binding.btnToggleCompleted.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.ic_tick_filled
-                        )
-                    )
-                else
-                    binding.btnToggleCompleted.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.ic_bullseye
-                        )
-                    )
-
-                if (item.description.isEmpty())
-                    binding.tvTaskDetails.visibility = View.GONE
-
-                if (item.date.isEmpty())
-                    binding.tvDate.visibility = View.GONE
-
-                binding.btnToggleCompleted.setOnClickListener {
-                    item.isCompleted = !item.isCompleted
-                    todoTaskViewModel.updateTask(item) {
-                        viewModel.refreshData()
+            val todayTasksAdapter =
+                TaskRecyclerAdapter(requireContext(), it, object : GenericCallback<Task> {
+                    override fun callback(data: Task, action: String) {
+                        if (action == "toggle") {
+                            todoTaskViewModel.updateTask(data) {
+                                viewModel.refreshData()
+                            }
+                        }
+                        if (action == "onClick") {
+                            val bundle = Bundle()
+                            bundle.putParcelable("task", data)
+                            bundle.putInt("groupId", data.groupId)
+                            routeToAddUpdateFragment(bundle)
+                        }
                     }
-                }
-
-                binding.root.setOnClickListener {
-                    val bundle = Bundle()
-                    bundle.putParcelable("task", item)
-                    bundle.putInt("groupId", item.groupId)
-                    routeToAddUpdateFragment(bundle)
-                }
-            }
+                })
             binding.rvTodayTask.adapter = todayTasksAdapter
 
         }
@@ -246,15 +217,17 @@ class TodoHomeFragment : Fragment() {
     private fun routeToAddUpdateFragment(bundle: Bundle) {
         val crudTaskFragment = CrudTaskFragment.getInstance(callback = object :
             GenericCallback<Task> {
-            override fun callback(data: Task) {
-                Utils.showSnackBar(
-                    requireContext(),
-                    binding.root,
-                    "Accidentally deleted?",
-                    "UNDO",
-                    Snackbar.LENGTH_LONG
-                ) {
-                    todoTaskViewModel.undoDelete(task = data)
+            override fun callback(data: Task, action: String) {
+                if (action == "delete") {
+                    Utils.showSnackBar(
+                        requireContext(),
+                        binding.root,
+                        "Accidentally deleted?",
+                        "UNDO",
+                        Snackbar.LENGTH_LONG
+                    ) {
+                        todoTaskViewModel.undoDelete(task = data)
+                    }
                 }
             }
         })

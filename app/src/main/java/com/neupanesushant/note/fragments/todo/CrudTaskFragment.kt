@@ -83,7 +83,7 @@ class CrudTaskFragment(private val callback: GenericCallback<Task>?) : BottomShe
         binding.btnDeleteTask.setOnClickListener {
             task?.let { task ->
                 viewModel.deleteTask(task)
-                callback?.callback(task)
+                callback?.callback(task, "delete")
                 this.dismissAllowingStateLoss()
             }
         }
