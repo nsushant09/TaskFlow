@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.ItemAllTaskBinding
 import com.neupanesushant.note.domain.model.Task
+import com.neupanesushant.note.extras.CallbackAction
 import com.neupanesushant.note.extras.GenericCallback
 
-class TaskRecyclerAdapter(private val context: Context, private val list: List<Task>, private val genericCallback: GenericCallback<Task>) :
+class TaskRecyclerAdapter(private val context: Context, var list: List<Task>, private val genericCallback: GenericCallback<Task>) :
     RecyclerView.Adapter<TaskRecyclerAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemAllTaskBinding) :
@@ -64,11 +65,11 @@ class TaskRecyclerAdapter(private val context: Context, private val list: List<T
 
         holder.btnToggleCompleted.setOnClickListener {
             item.isCompleted = !item.isCompleted
-            genericCallback.callback(item, "toggle")
+            genericCallback.callback(item, CallbackAction.TOGGLE)
         }
 
         holder.binding.root.setOnClickListener {
-            genericCallback.callback(item, "onClick")
+            genericCallback.callback(item, CallbackAction.CLICK)
         }
     }
 }

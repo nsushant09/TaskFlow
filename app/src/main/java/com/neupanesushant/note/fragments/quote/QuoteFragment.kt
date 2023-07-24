@@ -8,13 +8,10 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentQuoteBinding
-import com.neupanesushant.note.databinding.ItemAllQuoteBinding
-import com.neupanesushant.note.domain.model.Quote
 import com.neupanesushant.note.domain.model.UIState
 import com.neupanesushant.note.extras.Utils
-import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
+import com.neupanesushant.note.fragments.quote.adapter.QuotesAdapter
 import org.koin.android.ext.android.inject
 
 
@@ -85,27 +82,7 @@ class QuoteFragment : Fragment() {
                 return@observe
             }
 
-            val adapter = GenericRecyclerAdapter(
-                it,
-                ItemAllQuoteBinding::class.java
-            ) { binding: ItemAllQuoteBinding, item: Quote, _: List<Quote>, position: Int ->
-                when (position % 5) {
-                    0 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkblue)
-                    1 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkcreame)
-                    2 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkpink)
-                    3 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkgreen)
-                    4 -> binding.root.setBackgroundResource(R.drawable.all_quote_bg_darkyellow)
-                }
-
-                if (position % 2 == 0) {
-                    binding.root.animation =
-                        AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-                } else {
-                    binding.root.animation =
-                        AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
-                }
-                binding.tvQuoteContent.text = item.body
-            }
+            val adapter = QuotesAdapter(requireContext(), it)
             binding.rvAllQuotes.adapter = adapter
         }
     }

@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentTodoTaskBinding
 import com.neupanesushant.note.domain.model.Task
+import com.neupanesushant.note.extras.CallbackAction
 import com.neupanesushant.note.extras.GenericCallback
 import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.fragments.todo.adapter.TaskRecyclerAdapter
@@ -29,6 +30,7 @@ class TodoTaskFragment : Fragment() {
     private var groupId = -1
 
     private val viewModel: TodoTaskViewModel by inject()
+    private var allTaskAdapter: TaskRecyclerAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -101,7 +103,7 @@ class TodoTaskFragment : Fragment() {
         searchButtonListener()
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun setupObserver() {
 
         viewModel.tasksToDisplay.observe(this) {
@@ -121,21 +123,28 @@ class TodoTaskFragment : Fragment() {
                 binding.layoutEmptyMessage.layout.visibility = View.GONE
             }
 
-            val allTasksAdapter =
-                TaskRecyclerAdapter(requireContext(), it, object : GenericCallback<Task> {
-                    override fun callback(data: Task, action: String) {
-                        if (action == "toggle") {
-                            viewModel.updateTask(data)
+            if (allTaskAdapter == null) {
+                allTaskAdapter =
+                    TaskRecyclerAdapter(requireContext(), it, object : GenericCallback<Task> {
+                        override fun callback(data: Task, action: CallbackAction) {
+                            if (action == CallbackAction.TOGGLE) {
+                                viewModel.updateTask(data)
+                            }
+                            if (action == CallbackAction.CLICK) {
+                                val bundle = Bundle()
+                                bundle.putParcelable("task", data)
+                                bundle.putInt("groupId", groupId)
+                                routeToAddUpdateFragment(bundle)
+                            }
                         }
-                        if (action == "onClick") {
-                            val bundle = Bundle()
-                            bundle.putParcelable("task", data)
-                            bundle.putInt("groupId", groupId)
-                            routeToAddUpdateFragment(bundle)
-                        }
-                    }
-                })
-            binding.rvAllTasks.adapter = allTasksAdapter
+                    })
+            } else {
+                allTaskAdapter?.let { taskRecyclerAdapter ->
+                    taskRecyclerAdapter.list = it
+                    taskRecyclerAdapter.notifyDataSetChanged()
+                }
+            }
+            binding.rvAllTasks.adapter = allTaskAdapter
         }
     }
 
@@ -162,8 +171,8 @@ class TodoTaskFragment : Fragment() {
     private fun routeToAddUpdateFragment(bundle: Bundle) {
         val crudTaskFragment =
             CrudTaskFragment.getInstance(callback = object : GenericCallback<Task> {
-                override fun callback(data: Task, action: String) {
-                    if (action == "delete") {
+                override fun callback(data: Task, action: CallbackAction) {
+                    if (action == CallbackAction.DELETE) {
                         Utils.showSnackBar(
                             requireContext(),
                             binding.root,

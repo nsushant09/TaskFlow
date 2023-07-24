@@ -14,6 +14,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentCrudTaskBinding
 import com.neupanesushant.note.domain.model.Task
+import com.neupanesushant.note.extras.CallbackAction
 import com.neupanesushant.note.extras.GenericCallback
 import com.neupanesushant.note.extras.Utils
 import com.neupanesushant.note.extras.Utils.hideKeyboard
@@ -83,7 +84,7 @@ class CrudTaskFragment(private val callback: GenericCallback<Task>?) : BottomShe
         binding.btnDeleteTask.setOnClickListener {
             task?.let { task ->
                 viewModel.deleteTask(task)
-                callback?.callback(task, "delete")
+                callback?.callback(task, CallbackAction.DELETE)
                 this.dismissAllowingStateLoss()
             }
         }

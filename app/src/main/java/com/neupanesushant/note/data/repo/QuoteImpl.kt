@@ -16,23 +16,18 @@ class QuoteImpl(private val quotesAPI: QuotesAPI) {
             val tempList = arrayListOf<Quote>()
             val numQuotes = 15
 
-            while (tempList.size < numQuotes) {
-                val remainingQuotes = numQuotes - tempList.size
-                val deferredQuotes = List(remainingQuotes) {
-                    async { quotesAPI.getData().quote }
-                }
-
-                tempList.addAll(deferredQuotes.awaitAll())
-
-                val filteredQuotes = tempList.filter { quote ->
-                    quote.body.length > 15
-                }
-
-                tempList.clear()
-                tempList.addAll(filteredQuotes.take(numQuotes))
+            val deferredQuotes = List(numQuotes) {
+                async { quotesAPI.getData().quote }
             }
 
-            quotes.emit(ArrayList(tempList))
+            val filteredQuotes = deferredQuotes.awaitAll().filter { quote ->
+                quote.body.length > 15
+            }
+
+            tempList.clear()
+            tempList.addAll(filteredQuotes)
+            quotes.emit(tempList)
         }
     }
 }
+

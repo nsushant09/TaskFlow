@@ -1,7 +1,6 @@
 package com.neupanesushant.note.fragments.note
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,19 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.FragmentNoteBinding
-import com.neupanesushant.note.databinding.ItemAllNoteBinding
 import com.neupanesushant.note.domain.model.NoteDetails
+import com.neupanesushant.note.extras.CallbackAction
+import com.neupanesushant.note.extras.GenericCallback
 import com.neupanesushant.note.extras.Utils
-import com.neupanesushant.note.extras.adapter.GenericRecyclerAdapter
 import org.koin.android.ext.android.inject
 
 
@@ -29,7 +25,7 @@ class NoteFragment : Fragment() {
 
     private lateinit var _binding: FragmentNoteBinding
     private val binding get() = _binding
-    private lateinit var adapter: GenericRecyclerAdapter<NoteDetails, ItemAllNoteBinding>
+    private var adapter: NoteAdapter? = null
     private val viewModel: NoteViewModel by inject()
 
 
@@ -92,6 +88,7 @@ class NoteFragment : Fragment() {
         searchBarChangeListener()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setupObserver() {
 
         viewModel.notesToDisplay.observe(viewLifecycleOwner) {
@@ -105,35 +102,24 @@ class NoteFragment : Fragment() {
             }
 
             if (binding.rvAllNotes.adapter == null) {
-                adapter = GenericRecyclerAdapter(
-                    it.toMutableList(), ItemAllNoteBinding::class.java
-                ) { binding: ItemAllNoteBinding, item: NoteDetails, _: List<NoteDetails>, position: Int ->
-                    when (position % 5) {
-                        1 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightblue)
-                        2 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightcreame)
-                        3 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightgreen)
-                        4 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightpink)
-                        0 -> binding.allNoteLinearLayout.setBackgroundResource(R.drawable.all_note_bg_lightorange)
-                    }
-                    if (position % 2 == 0) {
-                        binding.root.animation =
-                            AnimationUtils.loadAnimation(context, R.anim.slide_in_left)
-                    } else {
-                        binding.root.animation =
-                            AnimationUtils.loadAnimation(context, R.anim.slide_in_right)
-                    }
-
-                    binding.tvTitle.text = item.title
-                    binding.tvDescription.text = item.description
-                    binding.tvDate.text = item.date
-                    binding.root.setOnClickListener {
-                        onNoteLayoutClick(item)
-                    }
-                }
-                binding.rvAllNotes.adapter = adapter
+                adapter = NoteAdapter(
+                    requireContext(),
+                    it,
+                    object : GenericCallback<NoteDetails> {
+                        override fun callback(data: NoteDetails, action: CallbackAction) {
+                            if (action == CallbackAction.CLICK) {
+                                onNoteLayoutClick(data)
+                            }
+                        }
+                    })
             } else {
-                adapter.refreshData(it)
+                adapter?.let { adapter ->
+                    adapter.list = it
+                    adapter.notifyDataSetChanged()
+                }
             }
+
+            binding.rvAllNotes.adapter = adapter
         }
     }
 

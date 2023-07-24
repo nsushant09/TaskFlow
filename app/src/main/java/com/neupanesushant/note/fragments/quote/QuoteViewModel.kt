@@ -34,6 +34,7 @@ class QuoteViewModel(private val quoteImpl: QuoteImpl) : ViewModel() {
                 _uiState.postValue(UIState.LOADING)
                 quoteImpl.getQuotes()
             } catch (e: Exception) {
+                e.printStackTrace()
                 _uiState.postValue(UIState.ERROR)
             }
         }
