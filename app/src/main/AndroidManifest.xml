@@ -19,7 +19,7 @@
         <activity
             android:name=".fragments.note.AddNoteActivity"
             android:exported="false"
-            android:windowSoftInputMode="stateVisible|adjustResize"/>
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

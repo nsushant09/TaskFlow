@@ -3,7 +3,6 @@ package com.neupanesushant.note.fragments.note
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -121,7 +120,6 @@ class AddNoteActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun onDeleteClick() {
         if (isOpenedFromNoteLayout) {
-            Log.i("AddNote", "Inside here")
             viewModel.deleteNoteDetails(
                 NoteDetails(
                     currentNoteObject.id,
