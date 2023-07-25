@@ -36,6 +36,7 @@ android {
             manifestPlaceholders = [usesCleartextTraffic: "false"]
         }
         debug {
+            debuggable true
             minifyEnabled false
             manifestPlaceholders = [usesCleartextTraffic: "true"]
         }

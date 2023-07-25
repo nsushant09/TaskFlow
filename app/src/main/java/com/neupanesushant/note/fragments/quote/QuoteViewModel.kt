@@ -20,8 +20,6 @@ class QuoteViewModel(private val quoteImpl: QuoteImpl) : ViewModel() {
     val listOfQuotes: LiveData<List<Quote>> get() = _listOfQuotes
 
     init {
-        _uiState.value = UIState.LOADING
-
         viewModelScope.launch {
             quoteImpl.quotes.collect {
                 _listOfQuotes.postValue(it.toList())
@@ -37,7 +35,6 @@ class QuoteViewModel(private val quoteImpl: QuoteImpl) : ViewModel() {
                 _uiState.postValue(UIState.LOADING)
                 quoteImpl.getQuotes()
             } catch (e: Exception) {
-                e.printStackTrace()
                 _uiState.postValue(UIState.ERROR)
             }
         }

@@ -76,6 +76,11 @@ class QuoteFragment : Fragment() {
 
     private fun setupListOfQuotes() {
         viewModel.listOfQuotes.observe(viewLifecycleOwner) {
+
+            if (it.isEmpty()) {
+                viewModel.getContentData()
+            }
+
             val adapter = QuotesAdapter(requireContext(), it)
             binding.rvAllQuotes.adapter = adapter
         }
