@@ -31,10 +31,12 @@ android {
     buildFeatures { viewBinding true }
     buildTypes {
         release {
+            signingConfig signingConfigs.debug
+            debuggable true
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            manifestPlaceholders = [usesCleartextTraffic: "true"]
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
         }
         debug {
             minifyEnabled false
