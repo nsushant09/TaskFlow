@@ -14,7 +14,7 @@ class QuoteImpl(private val quotesAPI: QuotesAPI) {
     suspend fun getQuotes() {
         withContext(Dispatchers.IO) {
             val tempList = arrayListOf<Quote>()
-            val numQuotes = 15
+            val numQuotes = 10
 
             val deferredQuotes = List(numQuotes) {
                 async { quotesAPI.getData().quote }
