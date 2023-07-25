@@ -15,24 +15,14 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
-    signingConfigs {
-        release {
-            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-                storeFile file(MYAPP_RELEASE_STORE_FILE)
-                storePassword System.getenv('STORE_PASSWORD')
-                keyAlias System.getenv('KEY_ALIAS')
-                keyPassword System.getenv('KEY_PASSWORD')
-            }
-        }
-    }
 
     buildFeatures { viewBinding true }
     buildTypes {
         release {
             signingConfig signingConfigs.debug
-            debuggable true
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -90,6 +80,10 @@ dependencies {
     implementation "io.insert-koin:koin-android:3.2.0"
     implementation "io.insert-koin:koin-android-compat:3.2.0"
     implementation "io.insert-koin:koin-androidx-navigation:3.2.0"
+
+    //multidex
+    def multidex_version = "2.0.1"
+    implementation "androidx.multidex:multidex:$multidex_version"
 
     //lottie animation
     def lottieVersion = "3.7.0"
