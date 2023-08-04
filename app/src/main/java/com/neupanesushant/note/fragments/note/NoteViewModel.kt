@@ -33,12 +33,6 @@ class NoteViewModel(private val noteRepo: NoteRepo) : ViewModel() {
         _notesToDisplay.value = noteRepo.getAllCachedNotes()
     }
 
-    fun refreshNotesIfDifferent(oldNotes: List<NoteDetails>) {
-        if (oldNotes != noteRepo.getAllCachedNotes()) {
-            refreshNotesToDisplay()
-        }
-    }
-
     fun setSearchFieldVisibility(boolean: Boolean) {
         _isSearchFieldVisible.value = boolean
     }

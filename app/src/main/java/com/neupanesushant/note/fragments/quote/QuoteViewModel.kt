@@ -11,20 +11,15 @@ import kotlinx.coroutines.launch
 
 class QuoteViewModel(private val quoteImpl: QuoteImpl) : ViewModel() {
 
-    private val _uiState = MutableLiveData<UIState>().apply {
-        this.value = UIState.READY
-    }
-    val uiState: LiveData<UIState> get() = _uiState
-
-    private val _listOfQuotes = MutableLiveData<List<Quote>>()
-    val listOfQuotes: LiveData<List<Quote>> get() = _listOfQuotes
+    private val _listOfQuotes = MutableLiveData<UIState<List<Quote>>>()
+    val listOfQuotes: LiveData<UIState<List<Quote>>> get() = _listOfQuotes
 
     init {
+        _listOfQuotes.postValue(UIState.Loading)
+
         viewModelScope.launch {
             quoteImpl.quotes.collect {
-                _listOfQuotes.postValue(it.toList())
-                if (it.size > 0)
-                    _uiState.postValue(UIState.READY)
+                _listOfQuotes.postValue(UIState.Success(it.toList()))
             }
         }
     }
@@ -32,10 +27,10 @@ class QuoteViewModel(private val quoteImpl: QuoteImpl) : ViewModel() {
     fun getContentData() {
         viewModelScope.launch {
             try {
-                _uiState.postValue(UIState.LOADING)
+                _listOfQuotes.postValue(UIState.Loading)
                 quoteImpl.getQuotes()
             } catch (e: Exception) {
-                _uiState.postValue(UIState.ERROR)
+                _listOfQuotes.postValue(UIState.Error(e))
             }
         }
     }

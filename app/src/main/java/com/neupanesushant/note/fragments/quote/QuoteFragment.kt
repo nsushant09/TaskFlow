@@ -49,43 +49,53 @@ class QuoteFragment : Fragment() {
         binding.errorMessageLayout.tvEmptyMessage.text = "An error has occured !!!"
     }
 
-    private fun setupObserver() {
-
-        setupListOfQuotes()
-
-        viewModel.uiState.observe(viewLifecycleOwner) {
-            when (it) {
-                UIState.LOADING -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.rvAllQuotes.visibility = View.GONE
-                    binding.errorMessageLayout.layout.visibility = View.GONE
-                }
-                UIState.ERROR -> {
-                    binding.errorMessageLayout.layout.visibility = View.VISIBLE
-                    binding.progressBar.visibility = View.GONE
-                    binding.rvAllQuotes.visibility = View.GONE
-                }
-                else -> {
-                    binding.rvAllQuotes.visibility = View.VISIBLE
-                    binding.progressBar.visibility = View.GONE
-                    binding.errorMessageLayout.layout.visibility = View.GONE
-                }
-            }
-        }
-    }
-
-    private fun setupListOfQuotes() {
-        viewModel.listOfQuotes.observe(viewLifecycleOwner) {
-
-            if (it.isEmpty()) {
-                viewModel.getContentData()
-            }
-
-            val adapter = QuotesAdapter(requireContext(), it)
-            binding.rvAllQuotes.adapter = adapter
-        }
-    }
-
     private fun setupEventListener() {}
+
+    private fun setupObserver() {
+        observeListOfQuotes()
+    }
+
+    private fun showProgressBar() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.rvAllQuotes.visibility = View.GONE
+        binding.errorMessageLayout.layout.visibility = View.GONE
+    }
+
+    private fun showData() {
+        binding.rvAllQuotes.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.GONE
+        binding.errorMessageLayout.layout.visibility = View.GONE
+    }
+
+    private fun showError() {
+        binding.errorMessageLayout.layout.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.GONE
+        binding.rvAllQuotes.visibility = View.GONE
+    }
+
+
+    private fun observeListOfQuotes() {
+        viewModel.listOfQuotes.observe(viewLifecycleOwner) { uiState ->
+
+
+            if (uiState is UIState.Success) {
+                showData()
+                val data = uiState.data
+                if (data.isEmpty())
+                    viewModel.getContentData()
+
+                val adapter = QuotesAdapter(requireContext(), data)
+                binding.rvAllQuotes.adapter = adapter
+            }
+
+            if (uiState is UIState.Loading) {
+                showProgressBar()
+            }
+
+            if (uiState is UIState.Error) {
+                showError()
+            }
+        }
+    }
 
 }

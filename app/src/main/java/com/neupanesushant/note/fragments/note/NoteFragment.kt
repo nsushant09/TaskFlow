@@ -146,7 +146,7 @@ class NoteFragment : Fragment() {
 
     private fun searchBarChangeListener() {
         binding.etSearch.addTextChangedListener {
-            if (it == null || it.isEmpty()) {
+            if (it.isNullOrEmpty()) {
                 viewModel.refreshNotesToDisplay()
             } else {
                 viewModel.searchNoteWithString(it.toString())

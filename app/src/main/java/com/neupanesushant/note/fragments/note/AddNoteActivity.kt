@@ -14,6 +14,7 @@ import org.koin.android.ext.android.inject
 import java.time.LocalDate
 
 class AddNoteActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityAddNoteBinding
     private var isOpenedFromNoteLayout: Boolean = false
     private lateinit var currentNoteObject: NoteDetails
@@ -119,19 +120,14 @@ class AddNoteActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun onDeleteClick() {
+
         if (isOpenedFromNoteLayout) {
             viewModel.deleteNoteDetails(
-                NoteDetails(
-                    currentNoteObject.id,
-                    currentNoteObject.title,
-                    currentNoteObject.description,
-                    currentNoteObject.date
-                )
+                currentNoteObject
             )
-            finish()
-        } else {
-            finish()
         }
+
+        finish()
     }
 
 
