@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".fragments.note.AddNoteActivity">
 
     <RelativeLayout
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="32dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        >
+        android:orientation="horizontal"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/btnBack"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:src="@drawable/ic_arrow_back"
-            app:tint="?attr/colorSecondary"
-            android:contentDescription="@string/icon_image"
             android:layout_centerVertical="true"
-            />
+            android:contentDescription="@string/icon_image"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="?attr/colorSecondary" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,60 +46,102 @@
             android:id="@+id/btnMenu"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:contentDescription="@string/icon_image"
-            android:src="@drawable/ic_menu"
-            app:tint="?attr/colorSecondary"
             android:foregroundGravity="right"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            />
+            android:src="@drawable/ic_menu"
+            app:tint="?attr/colorSecondary" />
 
     </RelativeLayout>
 
-    <EditText
-        android:id="@+id/etTitle"
+    <!--    TODO : Translator -->
+    <LinearLayout
+        android:id="@+id/translatorContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:paddingVertical="16dp"
-        android:paddingHorizontal="16dp"
-        android:textColor="?attr/colorOnPrimary"
-        android:textColorHint="@color/grey_dark"
-        android:hint="@string/title"
-        android:fontFamily="@font/latomed"
-        android:textSize="32sp"
-        android:fitsSystemWindows="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:cursorVisible="true"
-        android:background="@drawable/add_note_edittext_bg"
-        android:inputType="text"
-        android:textCursorDrawable="@null"
-        android:importantForAutofill="no" />
+        android:layout_margin="16dp"
+        android:orientation="horizontal"
 
-    <EditText
-        android:id="@+id/etDescription"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="700dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:paddingVertical="16dp"
-        android:paddingHorizontal="16dp"
-        android:textColor="?attr/colorOnPrimary"
-        android:textColorHint="@color/grey_dark"
-        android:fontFamily="@font/latoregular"
-        android:textSize="18sp"
-        android:fitsSystemWindows="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:cursorVisible="true"
-        android:background="@drawable/add_note_edittext_bg"
-        android:inputType="textMultiLine"
-        android:gravity="top"
-        android:textCursorDrawable="@null"
-        />
+        android:layout_height="0dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/translatorContainer">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <EditText
+                android:id="@+id/etTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/add_note_edittext_bg"
+                android:cursorVisible="true"
+                android:fitsSystemWindows="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/latomed"
+                android:hint="@string/title"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="16dp"
+                android:textColor="?attr/colorOnPrimary"
+                android:textColorHint="@color/grey_dark"
+                android:textCursorDrawable="@null"
+                android:textSize="32sp"
 
 
-</LinearLayout>
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <EditText
+                android:id="@+id/etDescription"
+                android:layout_width="match_parent"
+                android:layout_height="700dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/add_note_edittext_bg"
+                android:cursorVisible="true"
+                android:fitsSystemWindows="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@font/latoregular"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="16dp"
+                android:textColor="?attr/colorOnPrimary"
+                android:textColorHint="@color/grey_dark"
+                android:textCursorDrawable="@null"
+                android:textSize="18sp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/etTitle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
