@@ -3,13 +3,18 @@ package com.neupanesushant.note.fragments.note
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore.Audio.Genres
 import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.neupanesushant.note.R
 import com.neupanesushant.note.databinding.ActivityAddNoteBinding
 import com.neupanesushant.note.domain.model.NoteDetails
+import com.neupanesushant.note.extras.CallbackAction
+import com.neupanesushant.note.extras.GenericCallback
 import com.neupanesushant.note.extras.Utils
+import com.neupanesushant.note.extras.Utils.showText
+import com.neupanesushant.note.fragments.TranslateFragment
 import org.koin.android.ext.android.inject
 import java.time.LocalDate
 
@@ -99,11 +104,28 @@ class AddNoteActivity : AppCompatActivity() {
                 when (it.itemId) {
                     R.id.addNoteOptionsShare -> onShareClick()
                     R.id.addNoteOptionsDelete -> onDeleteClick()
+                    R.id.addNoteOptionsTranslate -> onTranslateClick()
                 }
                 true
             }
             popUpMenu.show()
         }
+    }
+
+    private fun onTranslateClick(){
+        val fragment = TranslateFragment(binding.etDescription.text.toString(),object : GenericCallback<String>{
+            override fun callback(data: String, action: CallbackAction) {
+                if(action == CallbackAction.SUCCESS){
+                    binding.etDescription.setText(data)
+                }
+                if(action == CallbackAction.FAILURE){
+                    this@AddNoteActivity.showText(data)
+                }
+            }
+        })
+
+        Utils.hideKeyboard(this, binding.root)
+        fragment.show(supportFragmentManager, fragment.javaClass.name)
     }
 
     private fun onShareClick() {

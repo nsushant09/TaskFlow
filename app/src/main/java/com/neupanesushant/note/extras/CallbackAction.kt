@@ -6,5 +6,7 @@ enum class CallbackAction {
     ADD,
     UPDATE,
     DELETE,
-    TOGGLE
+    TOGGLE,
+    SUCCESS,
+    FAILURE
 }

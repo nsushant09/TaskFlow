@@ -28,4 +28,7 @@
     <string name="date_optional">Date (Optional)</string>
     <string name="toggle_completed">Toggle Completed</string>
     <string name="today_s_tasks">Today\'s Tasks</string>
+    <string name="translate">Translate</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
 </resources>
