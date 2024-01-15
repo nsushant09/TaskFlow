@@ -26,7 +26,7 @@ class CrudTaskFragment(private val callback: GenericCallback<Task>?) : BottomShe
     private lateinit var _binding: FragmentCrudTaskBinding
     private val binding get() = _binding
 
-    private var groupId = -1;
+    private var groupId = -1
     private var task: Task? = null
     private val viewModel: TodoTaskViewModel by inject()
 
@@ -96,31 +96,39 @@ class CrudTaskFragment(private val callback: GenericCallback<Task>?) : BottomShe
                 binding.etTaskName.error = "Enter task name"
                 return@setOnClickListener
             }
-
             if (task == null) {
-                viewModel.addTask(
-                    binding.etTaskName.text.toString(),
-                    binding.etTaskDetails.text.toString(),
-                    binding.etDate.text.toString()
-                )
+                addTask()
             } else {
-
-                if (
-                    task!!.title != binding.etTaskName.text.toString() ||
-                    task!!.description != binding.etTaskDetails.text.toString() ||
-                    task!!.date != binding.etDate.text.toString()
-                ) {
-                    task!!.apply {
-                        title = binding.etTaskName.text.toString()
-                        description = binding.etTaskDetails.text.toString()
-                        date = binding.etDate.text.toString()
-                    }
-                    viewModel.updateTask(task!!)
-                }
+                updateTask()
             }
 
             this.dismissAllowingStateLoss()
 
+        }
+    }
+
+    private fun addTask() {
+        viewModel.addTask(
+            binding.etTaskName.text.toString(),
+            binding.etTaskDetails.text.toString(),
+            binding.etDate.text.toString()
+        )
+    }
+
+    private fun updateTask() {
+        task?.let { task ->
+            if (
+                task.title != binding.etTaskName.text.toString() ||
+                task.description != binding.etTaskDetails.text.toString() ||
+                task.date != binding.etDate.text.toString()
+            ) {
+                task.apply {
+                    title = binding.etTaskName.text.toString()
+                    description = binding.etTaskDetails.text.toString()
+                    date = binding.etDate.text.toString()
+                }
+                viewModel.updateTask(task)
+            }
         }
     }
 
@@ -158,8 +166,5 @@ class CrudTaskFragment(private val callback: GenericCallback<Task>?) : BottomShe
             return CrudTaskFragment(callback)
         }
 
-        fun getInstance(): CrudTaskFragment {
-            return CrudTaskFragment(null)
-        }
     }
 }

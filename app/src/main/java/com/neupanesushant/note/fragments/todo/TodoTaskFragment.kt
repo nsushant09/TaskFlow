@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -93,10 +94,14 @@ class TodoTaskFragment : Fragment() {
         }
 
         binding.etSearch.addTextChangedListener {
-            if (it == null || it.isEmpty()) {
-                viewModel.refreshTasksToDisplay()
-            } else {
-                viewModel.searchTasksWithTarget(it.toString())
+            viewModel.tasks.value?.let { tasks ->
+                var filtered = tasks
+                if (!it.isNullOrEmpty()) {
+                    filtered = filtered.filter { task ->
+                        Utils.isTargetInString(task.title, it.toString())
+                    }
+                }
+                refreshAllTaskAdapter(filtered)
             }
         }
 
@@ -106,46 +111,50 @@ class TodoTaskFragment : Fragment() {
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun setupObserver() {
 
-        viewModel.tasksToDisplay.observe(this) {
+        viewModel.tasks.observe(this) { tasks ->
 
-            it?.let { list ->
+            tasks?.let { list ->
                 binding.tvTotalTaskValue.text = "${list.size} tasks "
                 binding.tvCompletedTaskValue.text =
                     " ${list.filter { it.isCompleted }.size} completed"
             }
 
-            if (it == null || it.isEmpty()) {
-                binding.rvAllTasks.visibility = View.GONE
-                binding.layoutEmptyMessage.layout.visibility = View.VISIBLE
-                return@observe
-            } else {
-                binding.rvAllTasks.visibility = View.VISIBLE
-                binding.layoutEmptyMessage.layout.visibility = View.GONE
-            }
-
+            setAllTaskVisibility(!tasks.isNullOrEmpty())
             if (allTaskAdapter == null) {
-                allTaskAdapter =
-                    TaskRecyclerAdapter(requireContext(), it, object : GenericCallback<Task> {
-                        override fun callback(data: Task, action: CallbackAction) {
-                            if (action == CallbackAction.TOGGLE) {
-                                viewModel.updateTask(data)
-                            }
-                            if (action == CallbackAction.CLICK) {
-                                val bundle = Bundle()
-                                bundle.putParcelable("task", data)
-                                bundle.putInt("groupId", groupId)
-                                routeToAddUpdateFragment(bundle)
-                            }
-                        }
-                    })
+                setupAllTaskAdapter(tasks)
             } else {
-                allTaskAdapter?.let { taskRecyclerAdapter ->
-                    taskRecyclerAdapter.list = it
-                    taskRecyclerAdapter.notifyDataSetChanged()
-                }
+                refreshAllTaskAdapter(tasks)
             }
-            binding.rvAllTasks.adapter = allTaskAdapter
         }
+    }
+
+    private fun setAllTaskVisibility(isVisible: Boolean) {
+        binding.rvAllTasks.isVisible = isVisible
+        binding.layoutEmptyMessage.layout.isVisible = !isVisible
+    }
+
+    private fun setupAllTaskAdapter(list: List<Task>) {
+        allTaskAdapter =
+            TaskRecyclerAdapter(requireContext(), list, object : GenericCallback<Task> {
+                override fun callback(data: Task, action: CallbackAction) {
+                    if (action == CallbackAction.TOGGLE) {
+                        viewModel.updateTask(data)
+                    }
+                    if (action == CallbackAction.CLICK) {
+                        val bundle = Bundle()
+                        bundle.putParcelable("task", data)
+                        bundle.putInt("groupId", groupId)
+                        routeToAddUpdateFragment(bundle)
+                    }
+                }
+            })
+        binding.rvAllTasks.adapter = allTaskAdapter
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun refreshAllTaskAdapter(list: List<Task>) {
+        allTaskAdapter?.list = list
+        allTaskAdapter?.notifyDataSetChanged()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)

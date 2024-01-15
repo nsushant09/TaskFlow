@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.Flow
 
 class TaskRepoImpl(private val taskDAO: TaskDAO) : TaskRepo {
 
-    private var cachedTasks: List<Task> = emptyList()
-
     override suspend fun insert(task: Task) {
         taskDAO.insert(task)
     }
@@ -39,14 +37,4 @@ class TaskRepoImpl(private val taskDAO: TaskDAO) : TaskRepo {
     override suspend fun deleteAllTaskFromGroupId(groupId: Int) {
         taskDAO.deleteAllTaskFromGroupId(SimpleSQLiteQuery("DELETE FROM ${Constants.TASK_TABLE} WHERE groupID = $groupId"))
     }
-
-    override fun getCachedNotes(): List<Task> {
-        return cachedTasks
-    }
-
-    override fun setCachedNotes(notesToCache: List<Task>) {
-        cachedTasks = notesToCache
-    }
-
-
 }

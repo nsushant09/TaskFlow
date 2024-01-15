@@ -6,10 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neupanesushant.note.data.repo.TaskRepo
 import com.neupanesushant.note.domain.model.Task
-import com.neupanesushant.note.extras.Utils
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 
 class TodoTaskViewModel(private val taskRepo: TaskRepo) :
     ViewModel() {
@@ -19,8 +22,8 @@ class TodoTaskViewModel(private val taskRepo: TaskRepo) :
 
     private var groupId = -1;
 
-    private var _tasksToDisplay = MutableLiveData<List<Task>>()
-    val tasksToDisplay: LiveData<List<Task>> get() = _tasksToDisplay
+    private var _tasks = MutableLiveData<List<Task>>()
+    val tasks: LiveData<List<Task>> get() = _tasks
 
     private val _isSearchFieldVisible = MutableLiveData<Boolean>()
     val isSearchFieldVisible: LiveData<Boolean> get() = _isSearchFieldVisible
@@ -37,19 +40,8 @@ class TodoTaskViewModel(private val taskRepo: TaskRepo) :
         viewModelScope.launch {
             taskRepo.getTasksFromGroupId(groupId).flowOn(Dispatchers.Default)
                 .collectLatest {
-                    _tasksToDisplay.value = it
-                    taskRepo.setCachedNotes(it)
+                    _tasks.value = it
                 }
-        }
-    }
-
-    fun refreshTasksToDisplay() {
-        _tasksToDisplay.value = taskRepo.getCachedNotes()
-    }
-
-    fun refreshTasksIfDifferent(oldTasks: List<Task>) {
-        if (oldTasks != taskRepo.getCachedNotes()) {
-            refreshTasksToDisplay()
         }
     }
 
@@ -95,12 +87,6 @@ class TodoTaskViewModel(private val taskRepo: TaskRepo) :
 
     fun setSearchFieldVisibility(boolean: Boolean) {
         _isSearchFieldVisible.value = boolean
-    }
-
-    fun searchTasksWithTarget(target: String) {
-        _tasksToDisplay.value = taskRepo.getCachedNotes().filter {
-            Utils.isTargetInString(it.title, target)
-        }
     }
 
     override fun onCleared() {

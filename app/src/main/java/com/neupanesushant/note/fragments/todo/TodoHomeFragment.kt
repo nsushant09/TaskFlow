@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -100,7 +101,7 @@ class TodoHomeFragment : Fragment() {
     private fun setupEventListener() {
 
         binding.btnAddGroup.setOnClickListener {
-            val crudGroupFragment = CrudGroupFragment.getInstance() {
+            val crudGroupFragment = CrudGroupFragment.getInstance {
                 viewModel.refreshData()
             }
             crudGroupFragment.show(parentFragmentManager, crudGroupFragment::class.java.name)
@@ -114,42 +115,45 @@ class TodoHomeFragment : Fragment() {
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun setupAllGroupList() {
-        viewModel.allGroup.observe(viewLifecycleOwner) { it ->
-
-            if (it == null || it.isEmpty()) {
-                binding.rvAllGroupLists.visibility = View.GONE
-                binding.layoutEmptyMessageGroup.layout.visibility = View.VISIBLE
-            } else {
-                binding.rvAllGroupLists.visibility = View.VISIBLE
-                binding.layoutEmptyMessageGroup.layout.visibility = View.GONE
-            }
-
+        viewModel.allGroup.observe(viewLifecycleOwner) {
+            setAddGroupVisibility(!it.isNullOrEmpty())
             if (allGroupsAdapter == null) {
-                allGroupsAdapter = GroupAdapter(
-                    requireContext(),
-                    it,
-                    object : GenericCallback<TaskGroupWithAllTasks> {
-                        override fun callback(data: TaskGroupWithAllTasks, action: CallbackAction) {
-                            if (action == CallbackAction.CLICK) {
-                                groupClick(data)
-                            }
-
-                            if (action == CallbackAction.LONG_CLICK) {
-                                groupLongClick(data)
-                            }
-                        }
-
-                    })
+                setupAllGroupAdapter(it)
             } else {
-                allGroupsAdapter?.let { groupAdapter ->
-                    groupAdapter.list = it
-                    groupAdapter.notifyDataSetChanged()
-                }
+                refreshAllGroupAdapter(it)
             }
-
-            binding.rvAllGroupLists.adapter = allGroupsAdapter
         }
     }
+
+    private fun setAddGroupVisibility(isVisible: Boolean) {
+        binding.rvAllGroupLists.isVisible = isVisible
+        binding.layoutEmptyMessageGroup.layout.isVisible = !isVisible
+    }
+
+    private fun setupAllGroupAdapter(list: List<TaskGroupWithAllTasks>) {
+        allGroupsAdapter = GroupAdapter(
+            requireContext(),
+            list,
+            object : GenericCallback<TaskGroupWithAllTasks> {
+                override fun callback(data: TaskGroupWithAllTasks, action: CallbackAction) {
+                    if (action == CallbackAction.CLICK) {
+                        groupClick(data)
+                    }
+
+                    if (action == CallbackAction.LONG_CLICK) {
+                        groupLongClick(data)
+                    }
+                }
+            })
+        binding.rvAllGroupLists.adapter = allGroupsAdapter
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun refreshAllGroupAdapter(list: List<TaskGroupWithAllTasks>) {
+        allGroupsAdapter?.list = list
+        allGroupsAdapter?.notifyDataSetChanged()
+    }
+
 
     private fun groupClick(item: TaskGroupWithAllTasks) {
         val bundle = Bundle()
@@ -161,7 +165,7 @@ class TodoHomeFragment : Fragment() {
     private fun groupLongClick(item: TaskGroupWithAllTasks) {
         val bundle = Bundle()
         bundle.putParcelable("group", TaskGroup(item.id, item.name))
-        val crudGroupFragment = CrudGroupFragment.getInstance() {
+        val crudGroupFragment = CrudGroupFragment.getInstance {
             viewModel.refreshData()
         }
         crudGroupFragment.arguments = bundle
@@ -171,45 +175,46 @@ class TodoHomeFragment : Fragment() {
         )
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun setupTodayTasksList() {
-
-        viewModel.todayEndingTasks.observe(this) { it ->
-
-            if (it == null || it.isEmpty()) {
-                binding.rvTodayTask.visibility = View.GONE
-                binding.layoutEmptyMessageTodayTask.layout.visibility = View.VISIBLE
-            } else {
-                binding.rvTodayTask.visibility = View.VISIBLE
-                binding.layoutEmptyMessageTodayTask.layout.visibility = View.GONE
-            }
-
+        viewModel.todayEndingTasks.observe(this) {
+            setTodayTasksVisibility(!it.isNullOrEmpty())
             if (todayTaskAdapter == null) {
-                todayTaskAdapter =
-                    TaskRecyclerAdapter(requireContext(), it, object : GenericCallback<Task> {
-                        override fun callback(data: Task, action: CallbackAction) {
-                            if (action == CallbackAction.TOGGLE) {
-                                todoTaskViewModel.updateTask(data) {
-                                    viewModel.refreshData()
-                                }
-                            }
-                            if (action == CallbackAction.CLICK) {
-                                val bundle = Bundle()
-                                bundle.putParcelable("task", data)
-                                bundle.putInt("groupId", data.groupId)
-                                routeToAddUpdateFragment(bundle)
-                            }
-                        }
-                    })
+                setupTodayTaskAdapter(it)
             } else {
-                todayTaskAdapter?.let { adapter ->
-                    adapter.list = it
-                    adapter.notifyDataSetChanged()
-                }
+                refreshTodayTaskAdapter(it)
             }
-            binding.rvTodayTask.adapter = todayTaskAdapter
-
         }
+    }
+
+    private fun setTodayTasksVisibility(isVisible: Boolean) {
+        binding.rvTodayTask.isVisible = isVisible
+        binding.layoutEmptyMessageTodayTask.layout.isVisible = !isVisible
+    }
+
+    private fun setupTodayTaskAdapter(list: List<Task>) {
+        todayTaskAdapter =
+            TaskRecyclerAdapter(requireContext(), list, object : GenericCallback<Task> {
+                override fun callback(data: Task, action: CallbackAction) {
+                    if (action == CallbackAction.TOGGLE) {
+                        todoTaskViewModel.updateTask(data) {
+                            viewModel.refreshData()
+                        }
+                    }
+                    if (action == CallbackAction.CLICK) {
+                        val bundle = Bundle()
+                        bundle.putParcelable("task", data)
+                        bundle.putInt("groupId", data.groupId)
+                        routeToAddUpdateFragment(bundle)
+                    }
+                }
+            })
+        binding.rvTodayTask.adapter = todayTaskAdapter
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun refreshTodayTaskAdapter(list: List<Task>) {
+        todayTaskAdapter?.list = list
+        todayTaskAdapter?.notifyDataSetChanged()
     }
 
     private fun routeToAddUpdateFragment(bundle: Bundle) {
@@ -241,7 +246,4 @@ class TodoHomeFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
 }

@@ -11,7 +11,4 @@ interface TaskRepo {
     fun getTasksFromGroupId(groupId: Int): Flow<List<Task>>
     suspend fun getTasksFromGroupId(groupId: Int, default: Boolean = true): List<Task>
     suspend fun deleteAllTaskFromGroupId(groupId: Int)
-
-    fun getCachedNotes(): List<Task>
-    fun setCachedNotes(notesToCache: List<Task>)
 }

@@ -8,7 +8,11 @@ import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
 import com.neupanesushant.note.extras.Constants
 import kotlinx.coroutines.*
 
-class TaskGroupRepoImpl(private val taskGroupDAO: TaskGroupDAO, private val taskDAO: TaskDAO) :
+class TaskGroupRepoImpl(
+    private val taskGroupDAO: TaskGroupDAO,
+    private val taskDAO: TaskDAO,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+) :
     TaskGroupRepo {
 
     override suspend fun insert(taskGroup: TaskGroup) {
@@ -28,7 +32,7 @@ class TaskGroupRepoImpl(private val taskGroupDAO: TaskGroupDAO, private val task
     }
 
     override suspend fun getAllGroupWithTask(): List<TaskGroupWithAllTasks> {
-        return withContext(Dispatchers.IO) {
+        return withContext(coroutineDispatcher) {
             val temp = arrayListOf<TaskGroupWithAllTasks>()
             val deferredTasks = taskGroupDAO.getAllTaskGroup().map { group ->
                 async {
