@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -91,36 +92,41 @@ class NoteFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun setupObserver() {
 
-        viewModel.notesToDisplay.observe(viewLifecycleOwner) {
-            if (it == null || it.isEmpty()) {
-                binding.rvAllNotes.visibility = View.GONE
-                binding.layoutEmptyMessage.layout.visibility = View.VISIBLE
-                return@observe
-            } else {
-                binding.rvAllNotes.visibility = View.VISIBLE
-                binding.layoutEmptyMessage.layout.visibility = View.GONE
-            }
+        viewModel.notes.observe(viewLifecycleOwner) {
 
-            if (binding.rvAllNotes.adapter == null) {
-                adapter = NoteAdapter(
-                    requireContext(),
-                    it,
-                    object : GenericCallback<NoteDetails> {
-                        override fun callback(data: NoteDetails, action: CallbackAction) {
-                            if (action == CallbackAction.CLICK) {
-                                onNoteLayoutClick(data)
-                            }
-                        }
-                    })
-            } else {
-                adapter?.let { adapter ->
-                    adapter.list = it
-                    adapter.notifyDataSetChanged()
-                }
-            }
+            setNotesVisibility(!it.isNullOrEmpty())
 
-            binding.rvAllNotes.adapter = adapter
+            if (adapter == null) {
+                setupNoteAdapter(it)
+            } else {
+                refreshNoteAdapter(it)
+            }
         }
+    }
+
+    private fun setNotesVisibility(isVisible: Boolean) {
+        binding.rvAllNotes.isVisible = isVisible
+        binding.layoutEmptyMessage.layout.isVisible = !isVisible
+    }
+
+    private fun setupNoteAdapter(list: List<NoteDetails>) {
+        adapter = NoteAdapter(
+            requireContext(),
+            list,
+            object : GenericCallback<NoteDetails> {
+                override fun callback(data: NoteDetails, action: CallbackAction) {
+                    if (action == CallbackAction.CLICK) {
+                        onNoteLayoutClick(data)
+                    }
+                }
+            })
+        binding.rvAllNotes.adapter = adapter
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun refreshNoteAdapter(list: List<NoteDetails>) {
+        adapter?.list = list
+        adapter?.notifyDataSetChanged()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -146,10 +152,19 @@ class NoteFragment : Fragment() {
 
     private fun searchBarChangeListener() {
         binding.etSearch.addTextChangedListener {
-            if (it.isNullOrEmpty()) {
-                viewModel.refreshNotesToDisplay()
-            } else {
-                viewModel.searchNoteWithString(it.toString())
+            viewModel.notes.value?.let { notes ->
+                var filtered = notes
+                if (!it.isNullOrEmpty()) {
+                    filtered = filtered.filter { note ->
+                        Utils.isTargetInString(note.title, it.toString())
+                    }
+                }
+
+                adapter?.let { adapter ->
+                    if (adapter.list != filtered) {
+                        refreshNoteAdapter(notes)
+                    }
+                }
             }
         }
     }

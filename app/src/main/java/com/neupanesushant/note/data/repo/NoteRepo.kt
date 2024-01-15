@@ -8,6 +8,4 @@ interface NoteRepo {
     suspend fun update(noteDetails: NoteDetails)
     suspend fun delete(noteDetails: NoteDetails)
     suspend fun getAllNotes(): Flow<List<NoteDetails>>
-    fun getAllCachedNotes(): List<NoteDetails>
-    fun setAllNotesCache(notes: List<NoteDetails>)
 }

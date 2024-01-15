@@ -87,6 +87,9 @@ class TodoTaskFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun setupEventListener() {
+
+        searchButtonListener()
+
         binding.btnAddTask.setOnClickListener {
             val bundle = Bundle()
             bundle.putInt("groupId", groupId)
@@ -101,11 +104,14 @@ class TodoTaskFragment : Fragment() {
                         Utils.isTargetInString(task.title, it.toString())
                     }
                 }
-                refreshAllTaskAdapter(filtered)
+
+                allTaskAdapter?.let { adapter ->
+                    if (adapter.list != filtered) {
+                        refreshAllTaskAdapter(filtered)
+                    }
+                }
             }
         }
-
-        searchButtonListener()
     }
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
