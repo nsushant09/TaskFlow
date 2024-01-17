@@ -101,6 +101,7 @@ class NoteFragment : Fragment() {
             } else {
                 refreshNoteAdapter(it)
             }
+            binding.rvAllNotes.adapter = adapter
         }
     }
 
@@ -120,7 +121,6 @@ class NoteFragment : Fragment() {
                     }
                 }
             })
-        binding.rvAllNotes.adapter = adapter
     }
 
     @SuppressLint("NotifyDataSetChanged")

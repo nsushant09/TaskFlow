@@ -6,6 +6,10 @@ import com.neupanesushant.note.data.dao.NoteDetailsDAO
 import com.neupanesushant.note.data.dao.TaskDAO
 import com.neupanesushant.note.data.dao.TaskGroupDAO
 import com.neupanesushant.note.data.repo.*
+import com.neupanesushant.note.data.repo_impl.NoteRepoImpl
+import com.neupanesushant.note.data.repo_impl.QuoteImpl
+import com.neupanesushant.note.data.repo_impl.TaskGroupRepoImpl
+import com.neupanesushant.note.data.repo_impl.TaskRepoImpl
 import com.neupanesushant.note.domain.model.Database
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module

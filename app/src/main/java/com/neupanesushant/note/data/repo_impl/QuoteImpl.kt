@@ -1,5 +1,6 @@
-package com.neupanesushant.note.data.repo
+package com.neupanesushant.note.data.repo_impl
 
+import com.neupanesushant.note.data.repo.QuotesAPI
 import com.neupanesushant.note.domain.model.Quote
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

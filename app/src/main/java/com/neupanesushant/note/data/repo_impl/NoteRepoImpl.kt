@@ -1,6 +1,7 @@
-package com.neupanesushant.note.data.repo
+package com.neupanesushant.note.data.repo_impl
 
 import com.neupanesushant.note.data.dao.NoteDetailsDAO
+import com.neupanesushant.note.data.repo.NoteRepo
 import com.neupanesushant.note.domain.model.NoteDetails
 import kotlinx.coroutines.flow.Flow
 

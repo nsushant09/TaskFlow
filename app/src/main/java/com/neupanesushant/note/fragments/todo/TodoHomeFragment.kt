@@ -58,11 +58,11 @@ class TodoHomeFragment : Fragment() {
     private fun setupView() {
 
         binding.GroupsTitle.animation = AnimationUtils.loadAnimation(
-            requireContext(), androidx.appcompat.R.anim.abc_slide_in_top
+            requireContext(), androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom
         )
 
         binding.todayTitle.animation = AnimationUtils.loadAnimation(
-            requireContext(), androidx.appcompat.R.anim.abc_slide_in_top
+            requireContext(), androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom
         )
 
         binding.rvAllGroupLists.animation = AnimationUtils.loadAnimation(
@@ -122,6 +122,7 @@ class TodoHomeFragment : Fragment() {
             } else {
                 refreshAllGroupAdapter(it)
             }
+            binding.rvAllGroupLists.adapter = allGroupsAdapter
         }
     }
 
@@ -145,7 +146,6 @@ class TodoHomeFragment : Fragment() {
                     }
                 }
             })
-        binding.rvAllGroupLists.adapter = allGroupsAdapter
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -183,6 +183,7 @@ class TodoHomeFragment : Fragment() {
             } else {
                 refreshTodayTaskAdapter(it)
             }
+            binding.rvTodayTask.adapter = todayTaskAdapter
         }
     }
 
@@ -208,7 +209,6 @@ class TodoHomeFragment : Fragment() {
                     }
                 }
             })
-        binding.rvTodayTask.adapter = todayTaskAdapter
     }
 
     @SuppressLint("NotifyDataSetChanged")

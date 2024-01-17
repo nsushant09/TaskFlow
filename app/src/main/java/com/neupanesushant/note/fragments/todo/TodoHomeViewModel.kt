@@ -1,24 +1,18 @@
 package com.neupanesushant.note.fragments.todo
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.sqlite.db.SimpleSQLiteQuery
-import com.neupanesushant.note.domain.model.Task
-import com.neupanesushant.note.extras.Constants
-import com.neupanesushant.note.domain.model.TaskGroup
-import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
-import com.neupanesushant.note.data.dao.TaskDAO
-import com.neupanesushant.note.data.dao.TaskGroupDAO
 import com.neupanesushant.note.data.repo.TaskGroupRepo
 import com.neupanesushant.note.data.repo.TaskRepo
-import com.neupanesushant.note.extras.Utils
-import kotlinx.coroutines.*
+import com.neupanesushant.note.domain.model.Task
+import com.neupanesushant.note.domain.model.TaskGroup
+import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.launch
 
 class TodoHomeViewModel(private val taskGroupRepo: TaskGroupRepo, private val taskRepo: TaskRepo) :
     ViewModel() {

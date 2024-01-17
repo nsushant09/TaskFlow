@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neupanesushant.note.data.repo.QuoteImpl
+import com.neupanesushant.note.data.repo_impl.QuoteImpl
 import com.neupanesushant.note.domain.model.Quote
 import com.neupanesushant.note.domain.model.UIState
 import kotlinx.coroutines.launch
