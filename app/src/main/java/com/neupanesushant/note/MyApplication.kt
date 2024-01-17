@@ -11,9 +11,9 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        startKoin{
+        startKoin {
             androidContext(this@MyApplication)
-            modules(dataModule, vmModule)
+            modules(dataModule, domainModule, vmModule)
         }
 
     }

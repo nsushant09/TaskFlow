@@ -77,12 +77,9 @@ class QuoteFragment : Fragment() {
     private fun observeListOfQuotes() {
         viewModel.listOfQuotes.observe(viewLifecycleOwner) { uiState ->
 
-
             if (uiState is UIState.Success) {
                 showData()
                 val data = uiState.data
-                if (data.isEmpty())
-                    viewModel.getContentData()
 
                 val adapter = QuotesAdapter(requireContext(), data)
                 binding.rvAllQuotes.adapter = adapter

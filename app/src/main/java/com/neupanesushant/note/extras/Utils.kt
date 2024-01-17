@@ -54,7 +54,7 @@ object Utils {
     }
 
     fun showSnackBar(
-        context : Context,
+        context: Context,
         view: View,
         snackbarMessage: String,
         buttonText: String,
@@ -95,6 +95,9 @@ object Utils {
         return false
     }
 
+    fun isBeforeOneWeek(time: Long): Boolean {
+        return Date(time).before(Date())
+    }
 }
 
 

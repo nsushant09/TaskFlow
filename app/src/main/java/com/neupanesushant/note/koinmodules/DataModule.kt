@@ -3,11 +3,17 @@ package com.neupanesushant.note.koinmodules
 import android.app.Application
 import androidx.room.Room
 import com.neupanesushant.note.data.dao.NoteDetailsDAO
+import com.neupanesushant.note.data.dao.QuoteDAO
 import com.neupanesushant.note.data.dao.TaskDAO
 import com.neupanesushant.note.data.dao.TaskGroupDAO
-import com.neupanesushant.note.data.repo.*
+import com.neupanesushant.note.data.repo.NoteRepo
+import com.neupanesushant.note.data.repo.QuoteRepo
+import com.neupanesushant.note.data.repo.QuotesAPI
+import com.neupanesushant.note.data.repo.TaskGroupRepo
+import com.neupanesushant.note.data.repo.TaskRepo
+import com.neupanesushant.note.data.repo_impl.CacheQuoteImpl
 import com.neupanesushant.note.data.repo_impl.NoteRepoImpl
-import com.neupanesushant.note.data.repo_impl.QuoteImpl
+import com.neupanesushant.note.data.repo_impl.QuoteAPIImpl
 import com.neupanesushant.note.data.repo_impl.TaskGroupRepoImpl
 import com.neupanesushant.note.data.repo_impl.TaskRepoImpl
 import com.neupanesushant.note.domain.model.Database
@@ -36,6 +42,10 @@ val dataModule = module {
         return database.taskDao()
     }
 
+    fun provideQuoteDao(database: Database): QuoteDAO {
+        return database.quoteDao()
+    }
+
     single() {
         Retrofit.Builder()
             .baseUrl(BASEURL)
@@ -56,9 +66,12 @@ val dataModule = module {
     single {
         provideTaskGroupDao(get())
     }
+    single {
+        provideQuoteDao(get())
+    }
 
     single {
-        QuoteImpl(get())
+        QuoteAPIImpl(get())
     }
 
     single<TaskRepo> {
@@ -71,5 +84,9 @@ val dataModule = module {
 
     single<NoteRepo> {
         NoteRepoImpl(get())
+    }
+
+    single<QuoteRepo> {
+        CacheQuoteImpl(get(), get())
     }
 }

@@ -5,15 +5,11 @@ import com.neupanesushant.note.domain.model.Quote
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 
-class QuoteImpl(private val quotesAPI: QuotesAPI) {
-
-    val quotes: MutableStateFlow<ArrayList<Quote>> = MutableStateFlow(arrayListOf())
-
-    suspend fun getQuotes() {
-        withContext(Dispatchers.IO) {
+class QuoteAPIImpl(private val quotesAPI: QuotesAPI) {
+    suspend fun getQuotes(): List<Quote> {
+        return withContext(Dispatchers.IO) {
             val tempList = arrayListOf<Quote>()
             val numQuotes = 10
 
@@ -27,7 +23,7 @@ class QuoteImpl(private val quotesAPI: QuotesAPI) {
 
             tempList.clear()
             tempList.addAll(filteredQuotes)
-            quotes.emit(tempList)
+            tempList
         }
     }
 }
