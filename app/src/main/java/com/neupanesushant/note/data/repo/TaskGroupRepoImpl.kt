@@ -1,16 +1,17 @@
 package com.neupanesushant.note.data.repo
 
-import androidx.sqlite.db.SimpleSQLiteQuery
-import com.neupanesushant.note.data.dao.TaskDAO
 import com.neupanesushant.note.data.dao.TaskGroupDAO
 import com.neupanesushant.note.domain.model.TaskGroup
 import com.neupanesushant.note.domain.model.TaskGroupWithAllTasks
-import com.neupanesushant.note.extras.Constants
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 
 class TaskGroupRepoImpl(
     private val taskGroupDAO: TaskGroupDAO,
-    private val taskDAO: TaskDAO,
+    private val taskRepo: TaskRepo,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) :
     TaskGroupRepo {
@@ -37,7 +38,10 @@ class TaskGroupRepoImpl(
             val deferredTasks = taskGroupDAO.getAllTaskGroup().map { group ->
                 async {
                     val tasks =
-                        taskDAO.getTasksFromGroupId(SimpleSQLiteQuery("SELECT * FROM ${Constants.TASK_TABLE} WHERE groupId = ${group.id}"))
+                        taskRepo.getTasksFromGroupId(
+                            group.id,
+                            true
+                        )
                     TaskGroupWithAllTasks(group.id, group.name, tasks)
                 }
             }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neupanesushant.note.data.repo.NoteRepo
 import com.neupanesushant.note.domain.model.NoteDetails
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -20,7 +21,7 @@ class NoteViewModel(private val noteRepo: NoteRepo) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            noteRepo.getAllNotes().flowOn(this.coroutineContext).collectLatest {
+            noteRepo.getAllNotes().flowOn(Dispatchers.IO).collectLatest {
                 _notes.postValue(it)
             }
         }

@@ -1,9 +1,12 @@
 package com.neupanesushant.note.data.dao
 
-import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.RawQuery
+import androidx.room.Update
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.neupanesushant.note.domain.model.NoteDetails
 import com.neupanesushant.note.domain.model.Task
 import com.neupanesushant.note.domain.model.TaskGroup
 import kotlinx.coroutines.flow.Flow

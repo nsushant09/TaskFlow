@@ -13,8 +13,6 @@ import com.neupanesushant.note.databinding.FragmentTranslateBinding
 import com.neupanesushant.note.domain.usecase.LanguageTranslator
 import com.neupanesushant.note.extras.CallbackAction
 import com.neupanesushant.note.extras.GenericCallback
-import com.neupanesushant.note.extras.Utils
-import com.neupanesushant.note.extras.Utils.showText
 
 class TranslateFragment(private val text: String, private val callback: GenericCallback<String>) :
     BottomSheetDialogFragment() {
@@ -49,9 +47,10 @@ class TranslateFragment(private val text: String, private val callback: GenericC
 
     private fun setupEventListener() {
         binding.btnTranslate.setOnClickListener {
-            val sourceCode = LanguageTranslator.countryCodes[binding.translateFromTv.text.toString()]
+            val sourceCode =
+                LanguageTranslator.countryCodes[binding.translateFromTv.text.toString()]
             val targetCode = LanguageTranslator.countryCodes[binding.translateToTv.text.toString()]
-            if(sourceCode == null || targetCode == null){
+            if (sourceCode == null || targetCode == null) {
                 callback.callback("Could not translate text", CallbackAction.FAILURE)
                 this.dismissAllowingStateLoss()
                 return@setOnClickListener
@@ -72,7 +71,6 @@ class TranslateFragment(private val text: String, private val callback: GenericC
             ArrayAdapter<String>(requireContext(), R.layout.autocompleteview_textview, countries)
         binding.translateFromTv.setAdapter(fromArrayAdapter)
         binding.translateToTv.setAdapter(toArrayAdapter)
-        val defaultIndex = 0
         binding.translateFromTv.setText("English", false) // Set default for translateFromTv
         binding.translateToTv.setText("Spanish", false)
     }

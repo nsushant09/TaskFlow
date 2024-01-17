@@ -70,7 +70,7 @@ class TodoHomeViewModel(private val taskGroupRepo: TaskGroupRepo, private val ta
     private fun getAllGroup() {
         viewModelScope.launch {
             val newValue = taskGroupRepo.getAllGroupWithTask()
-            if (allGroup.value == null || allGroup!!.value != newValue) {
+            if (allGroup.value == null || allGroup.value != newValue) {
                 _allGroup.value = taskGroupRepo.getAllGroupWithTask()
             }
         }

@@ -31,14 +31,16 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/QuoteTitle" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="32dp"
-        android:indeterminateDrawable="@drawable/progressbarstyle1"
-        android:indeterminateDuration="1200"
+        app:trackColor="?attr/colorOnSecondary"
+        android:progressTint="?attr/colorSecondary"
+        app:trackCornerRadius="8dp"
+        android:indeterminate="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/QuoteTitle" />
